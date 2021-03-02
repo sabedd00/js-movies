@@ -1,0 +1,27 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1a143b;;
+}
+
+.header__content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    background-color: #281f55;
+}
+
+.header-logo__img {
+    margin: 1%;
+    width: 10%;
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 3;
+}
+
+.search__content {
+    margin: 10% 10% 10% 0;
+    grid-column-start: 3;
+    grid-row-start: 2;
+    grid-row-end: 2;
+}
