@@ -8,3 +8,5 @@ const ENG_MOVIE_LANGUAGE = 'en-US';
 
 const QUERY_POPULAR_MOVIES = 'movie/popular?';
 const QUERY_POPULAR_MOVIES_PAGE = 'page=1';
+
+const MOVIES_SEARCH_QUERY = 'search/movie?';
