@@ -1,13 +1,14 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #1a143b;;
 }
 
 .header__content {
+    margin: auto;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    background-color: #281f55;
+    width: 95%;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
 }
 
 .header-logo__img {
@@ -26,9 +27,8 @@ body {
     grid-row-end: 2;
 }
 
-
 .main-content {
-    width: 80%;
+    width: 95%;
     margin: auto;
 }
 
@@ -43,7 +43,7 @@ body {
 }
 
 .popular-movie__item__img,
-.search-movie-result__item__img  {
+.search-movie-result__item__img {
     max-width: 100%;
 }
 

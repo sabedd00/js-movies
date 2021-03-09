@@ -20,10 +20,18 @@ function loadSearchResults(evt) {
                         </div>
                     `;
             });
+
+            let searchMovieResultItem = document.getElementsByClassName('search-movie-result__item');
+            for (let i = 0; i < searchMovieResultItem.length; i++) {
+                searchMovieResultItem[i].addEventListener('click', () => {
+                    let id = response.results[i].id;
+                    loadMovieDetails(id);
+                });
+            }
         }
     }
 
-    xhr.open("GET", BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + MOVIE_LANGUAGE_QUERY + ENG_MOVIE_LANGUAGE + '&' + `query=${input.value}`, true);
+    xhr.open("GET", BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + `query=${input.value}`, true);
     xhr.send();
     evt.preventDefault();
 }
