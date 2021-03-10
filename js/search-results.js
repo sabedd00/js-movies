@@ -13,12 +13,18 @@ function loadSearchResults(evt) {
 
             movieItem.innerHTML = ' ';
             response.results.forEach(function (movie) {
-                movieItem.innerHTML += `
-                        <div class="search-movie-result__item">
-                          <img class="search-movie-result__item__img" src="${BASE_IMAGE_URL + BIG_IMAGE_SIZE + movie.poster_path}" alt="Search result movie poster">
-                           <h3 class="search-movie-result__item__title">${movie.title}</h3>
-                        </div>
-                    `;
+                let releaseYear = new Date(movie.release_date).getFullYear();
+                let resultItem = document.createElement('div');
+                resultItem.className = "search-movie-result__item";
+                let poster = document.createElement('img');
+                poster.className = "search-movie-result__item__img";
+                poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + movie.poster_path}`;
+                poster.alt = "Search result movie poster";
+                let title = document.createElement('h3');
+                title.className = "search-movie-result__item__title";
+                title.textContent = `${movie.title + ` (${releaseYear})`}`;
+                resultItem.append(poster, title);
+                movieItem.appendChild(resultItem);
             });
 
             let searchMovieResultItem = document.getElementsByClassName('search-movie-result__item');

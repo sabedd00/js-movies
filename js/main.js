@@ -13,12 +13,17 @@ function loadPopularMovies() {
             movieItem.innerHTML = ' ';
             response.results.forEach(function (movie) {
                 let releaseYear = new Date(movie.release_date).getFullYear();
-                movieItem.innerHTML += `
-                      <div class="popular-movie__item">
-                        <img class="popular-movie__item__img" src="${BASE_IMAGE_URL + BIG_IMAGE_SIZE + movie.poster_path}" alt="Poster of a popular movie">
-                        <h3 class="popular-movie__item__title">${movie.title + `(${releaseYear})`}</h3>
-                      </div>
-                `;
+                let item = document.createElement('div');
+                item.className = "popular-movie__item";
+                let poster = document.createElement('img');
+                poster.className = "popular-movie__item__img";
+                poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + movie.poster_path}`;
+                poster.alt = "Poster of a popular movie";
+                let title = document.createElement('h3');
+                title.className = "popular-movie__item__title";
+                title.textContent = `${movie.title + `(${releaseYear})`}`;
+                item.append(poster, title);
+                movieItem.appendChild(item);
             });
 
             let popularMovieItem = document.getElementsByClassName('popular-movie__item');
