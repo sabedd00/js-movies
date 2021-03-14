@@ -2,6 +2,8 @@
 
 document.getElementById("searchForm").addEventListener("submit", loadSearchResults);
 let input = document.getElementById("searchText");
+let movieTitle = document.getElementById('movieTitle');
+let additionalMovieTitle = document.getElementById('additionalMovieTitle');
 
 function loadSearchResults(evt) {
     let xhr = new XMLHttpRequest();
@@ -10,8 +12,12 @@ function loadSearchResults(evt) {
     xhr.onload = function () {
         if (xhr.status === 200 && xhr.readyState === 4) {
             let movieItem = document.getElementById('movieItem');
+            let additionalMovieItem = document.getElementById('additionalMovieItem');
             let response = JSON.parse(xhr.responseText);
             movieItem.innerHTML = ' ';
+            additionalMovieItem.innerHTML = ' ';
+            additionalMovieTitle.textContent = ' ';
+            movieTitle.textContent = `Search Results: ${response.total_results} movies`;
             response.results.forEach(function (movie) {
                 addDataToValues(movieItem, movie);
             });
@@ -92,7 +98,7 @@ function addDataToValues(movieItem, movie) {
     poster.alt = "Search result movie poster";
     let title = document.createElement('h3');
     title.className = "search-movie-result__item__title";
-    title.textContent = `${movie.title + ` ( ${releaseYear})`}`;
+    title.textContent = `${movie.title + ` (${releaseYear})`}`;
     resultItem.append(poster, title);
     movieItem.appendChild(resultItem);
 }
