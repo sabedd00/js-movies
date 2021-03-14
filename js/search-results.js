@@ -94,7 +94,11 @@ function addDataToValues(movieItem, movie) {
     resultItem.id = "resultItem";
     let poster = document.createElement('img');
     poster.className = "search-movie-result__item__img";
-    poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + movie.poster_path}`;
+    if (movie.poster_path == null) {
+        poster.src = './images/empty-poster.png';
+    } else {
+        poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + movie.poster_path}`;
+    }
     poster.alt = "Search result movie poster";
     let title = document.createElement('h3');
     title.className = "search-movie-result__item__title";

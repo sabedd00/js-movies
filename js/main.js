@@ -27,14 +27,14 @@ function loadPopularMovies() {
                 poster.id = "posterOfPopularMovie"
                 poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + movie.poster_path}`;
                 poster.alt = "Poster of a popular movie";
-                let voteAverage = document.createElement('p');
-                voteAverage.className = "popular-vote-average";
-                voteAverage.id = "popularVoteAverage";
-                voteAverage.textContent = `${movie.vote_average}`;
+                // let voteAverage = document.createElement('p');
+                // voteAverage.className = "popular-vote-average";
+                // voteAverage.id = "popularVoteAverage";
+                // voteAverage.textContent = `${movie.vote_average}`;
                 let title = document.createElement('h3');
                 title.className = "popular-movie__item__title";
                 title.textContent = `${movie.title + ` (${releaseYear})`}`;
-                item.append(poster, voteAverage, title);
+                item.append(poster, title);
                 movieItem.appendChild(item);
             });
 
@@ -75,14 +75,14 @@ function loadTopRatedMovies() {
                 poster.id = "posterOfTopRatedMovie"
                 poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + movie.poster_path}`;
                 poster.alt = "Poster of a top rated movie";
-                let voteAverage = document.createElement('p');
-                voteAverage.className = "top-rated-vote-average";
-                voteAverage.id = "topRatedVoteAverage";
-                voteAverage.textContent = `${movie.vote_average}`;
+                // let voteAverage = document.createElement('p');
+                // voteAverage.className = "top-rated-vote-average";
+                // voteAverage.id = "topRatedVoteAverage";
+                // voteAverage.textContent = `${movie.vote_average}`;
                 let title = document.createElement('h3');
                 title.className = "top-rated__item__title";
                 title.textContent = `${movie.title + ` (${releaseYear})`}`;
-                item.append(poster, voteAverage, title);
+                item.append(poster, title);
                 movieItem.appendChild(item);
             });
 

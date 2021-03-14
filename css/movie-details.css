@@ -32,7 +32,7 @@ body {
     grid-area: n;
 }
 
-.movie__title,
+.movie-details__title,
 .overview-container,
 .genres__list {
     margin-top: 0;
@@ -41,7 +41,7 @@ body {
     color: white;
 }
 
-.movie__title {
+.movie-details__title {
     text-transform: uppercase;
     font-weight: bold;
 }
