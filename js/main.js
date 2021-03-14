@@ -6,6 +6,7 @@ function loadPopularMovies() {
     let xhr = new XMLHttpRequest();
 
     xhr.onreadystatechange = function () {
+        window.scroll(0, 0);
         if (xhr.status === 200 && xhr.readyState === 4) {
             let movieItem = document.getElementById('movieItem');
             let response = JSON.parse(xhr.responseText);
@@ -36,6 +37,6 @@ function loadPopularMovies() {
         }
     }
 
-    xhr.open('GET', BASE_URL + QUERY_POPULAR_MOVIES + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_POPULAR_MOVIES_PAGE, true);
+    xhr.open('GET', BASE_URL + QUERY_POPULAR_MOVIES + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + '1', true);
     xhr.send();
 }

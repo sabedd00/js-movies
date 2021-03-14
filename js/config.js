@@ -10,7 +10,7 @@ const LANGUAGE_QUERY = '&language=';
 const ENG_LANGUAGE = 'en-US';
 
 const QUERY_POPULAR_MOVIES = 'movie/popular?';
-const QUERY_POPULAR_MOVIES_PAGE = 'page=1';
+const QUERY_PAGE = 'page=';
 
 const MOVIES_SEARCH_QUERY = 'search/movie?';
 

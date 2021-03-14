@@ -11,6 +11,8 @@ function loadMovieDetails(movieId) {
                 let background = BASE_IMAGE_URL + ORIGINAL_IMAGE_SIZE + response.backdrop_path;
                 document.body.style.backgroundImage = 'url(' + background + ')';
 
+                window.scroll(0, 0);
+
                 let poster = BASE_IMAGE_URL + BIG_IMAGE_SIZE + response.poster_path;
                 let title = response.title;
                 let overview = response.overview;
@@ -103,13 +105,13 @@ function loadMovieDetails(movieId) {
                 response.similar.results.forEach(function (movie) {
                     let releaseYear = new Date(movie.release_date).getFullYear();
                     let item = document.createElement('div');
-                    item.className = "similar-movie__item";
+                    item.className = "similar-movie";
                     let poster = document.createElement('img');
-                    poster.className = "similar-movie__img";
+                    poster.className = "similar-movie";
                     poster.src = `${BASE_IMAGE_URL + SMALL_IMAGE_SIZE + movie.poster_path}`;
                     poster.alt = "Similar movie poster";
                     let title = document.createElement('h3');
-                    title.className = "similar-movie__title";
+                    title.className = "simila";
                     title.textContent = `${movie.title + `(${releaseYear})`}`;
                     item.append(poster, title);
                     similarMovieItem.appendChild(item);
