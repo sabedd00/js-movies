@@ -1,5 +1,7 @@
 'use strict';
 
+import { loadMovieDetails } from "./movie-details.js";
+
 loadPopularMovies();
 loadTopRatedMovies();
 

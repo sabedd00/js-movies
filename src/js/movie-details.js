@@ -1,6 +1,8 @@
 'use strict';
 
-function loadMovieDetails(movieId) {
+import {tns} from '/js-movies/node_modules/tiny-slider/src/tiny-slider.js';
+
+export function loadMovieDetails(movieId) {
     let xhr = new XMLHttpRequest();
 
     xhr.addEventListener('load', function () {
@@ -101,25 +103,46 @@ function loadMovieDetails(movieId) {
                 main.append(sectionDetails, additionalDetails, similarMovies);
                 movieDetails.appendChild(main);
 
-                let similarMovieItem = document.getElementById('similarMovieItem');
-                response.similar.results.forEach(function (movie) {
-                    let releaseYear = new Date(movie.release_date).getFullYear();
-                    let item = document.createElement('div');
-                    item.className = "similar-movie";
-                    let poster = document.createElement('img');
-                    poster.className = "similar-movie";
-                    poster.src = `${BASE_IMAGE_URL + SMALL_IMAGE_SIZE + movie.poster_path}`;
-                    poster.alt = "Similar movie poster";
-                    let title = document.createElement('h3');
-                    title.className = "simila";
-                    title.textContent = `${movie.title + `(${releaseYear})`}`;
-                    item.append(poster, title);
-                    similarMovieItem.appendChild(item);
-                })
+                if (response.similar.results[0] === undefined) {
+                    similarMovies.innerHTML = ' ';
+                } else {
+                    let similarMovieItem = document.getElementById('similarMovieItem');
+                    response.similar.results.forEach(function (movie) {
+                        let releaseYear = new Date(movie.release_date).getFullYear();
+                        let item = document.createElement('div');
+                        item.className = "similar-movie";
+                        item.id = "similarMovie"
+                        let poster = document.createElement('img');
+                        poster.className = "similar-movie__img";
+                        poster.src = `${BASE_IMAGE_URL + SMALL_IMAGE_SIZE + movie.poster_path}`;
+                        poster.alt = "Similar movie poster";
+                        let title = document.createElement('h3');
+                        title.className = "similar-movie__title";
+                        title.textContent = `${movie.title + ` (${releaseYear})`}`;
+                        item.append(poster, title);
+                        similarMovieItem.appendChild(item);
+                    })
+                    // let pageButtonPrev = document.createElement('button');
+                    // pageButtonPrev.className = "prev-page__button controls";
+                    // pageButtonPrev.textContent = "Prev";
+                    // let pageButtonNext = document.createElement('button');
+                    // pageButtonNext.className = "next-page__button controls";
+                    // pageButtonNext.textContent = "Next";
+
+                    tns({
+                        container: '.similar-movie__item',
+                        items: 4,
+                        "mouseDrag": true,
+                        "slideBy": "page",
+                        "rewind": true,
+                        "swipeAngle": false,
+                        "speed": 400,
+                    });
+                }
+
             }
         }
     )
     xhr.open("GET", BASE_URL + `movie/${movieId}?` + API_KEY + QUERY_APPEND_TO_RESPONSE + 'videos,similar', true);
     xhr.send();
 }
-
