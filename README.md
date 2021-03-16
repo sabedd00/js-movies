@@ -1,10 +1,10 @@
 # TMBD Movies
+<p>
+  In progress...
+</p>
 
 <p>
   TMDb Movies is a JavaScript application that loads data through <a href="https://www.themoviedb.org/documentation/api">The Movie Database (TMDb) API.</a>
-</p>  
-<p>
-  Clone the repo: https://github.com/sabedd00/js-movies.git
 </p>
 
 <img src="./docs/images/main-page.png">
