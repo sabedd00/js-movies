@@ -1,6 +1,17 @@
 'use strict';
 
-import {tns} from '/js-movies/node_modules/tiny-slider/src/tiny-slider.js';
+import logo from '../images/tmdb-logo.svg';
+import { tns } from '../../node_modules/tiny-slider/src/tiny-slider.js';
+import {
+    API_KEY,
+    BASE_IMAGE_URL,
+    BASE_URL,
+    BIG_IMAGE_SIZE,
+    ORIGINAL_IMAGE_SIZE, QUERY_APPEND_TO_RESPONSE,
+    SMALL_IMAGE_SIZE,
+    URL_YOUTUBE
+} from "./config";
+import '../css/movie-details.css';
 
 export function loadMovieDetails(movieId) {
     let xhr = new XMLHttpRequest();

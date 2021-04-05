@@ -1,37 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
-    <title>Movies</title>
-    <link rel="stylesheet" href="src/css/main.css">
-    <link rel="stylesheet" href="src/css/movie-details.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.3/tiny-slider.css">
-  </head>
-  <body>
-
-    <header class="header">
-      <div class="header__content">
-        <img class="header-logo__img" src="src/images/tmdb-logo.svg" alt="logo">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <script src="./config.bundle.js"></script>
+    <script src="./movieDetails.bundle.js"></script>
+    <script src="./searchResults.bundle.js"></script>
+</head>
+<body>
+<header class="header">
+    <div class="header__content">
+        <img class="header-logo__img" src="./bb8aa703cb92c9aa31fc.svg" alt="logo">
         <div class="search__content">
-          <form id="searchForm">
-            <input class="form-control" id="searchText" placeholder="Search Movie....">
-          </form>
+            <form id="searchForm">
+                <input class="form-control" id="searchText" placeholder="Search Movie....">
+            </form>
         </div>
-      </div>
-    </header>
+    </div>
+</header>
 
-    <div class="main-content" id="mainContent">
-      <div class="movies-list__content" id="moviesList">
+<div class="main-content" id="mainContent">
+    <div class="movies-list__content" id="moviesList">
         <h2 class="movie__title" id="movieTitle"></h2>
         <div class="movie__item" id="movieItem"></div>
         <h2 class="additional-movie__title" id="additionalMovieTitle"></h2>
         <div class="additional-movie__item" id="additionalMovieItem"></div>
-      </div>
     </div>
+</div>
 
-    <script src="src/js/config.js"></script>
-    <script type="module" src="src/js/index.js"></script>
-    <script type="module" src="src/js/search-results.js"></script>
-    <script type="module" src="src/js/movie-details.js"></script>
-  </body>
+<script src="index.bundle.js"></script>
+</body>
 </html>
