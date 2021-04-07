@@ -1,11 +1,20 @@
 # TMBD Movies
-<p>
-  In progress...
-</p>
+
+### `In progress...`
 
 <p>
   TMDb Movies is a JavaScript application that loads data through <a href="https://www.themoviedb.org/documentation/api">The Movie Database (TMDb) API.</a>
 </p>
+<p>
+This application is implemented using:
+</p>
+<table>
+  <tr>
+    <th>CSS</th>
+    <td>HTML</td>
+    <th>JS</th>
+  </tr>
+</table>
 
 <img src="src/docs/images/main-page.png">
 
@@ -23,3 +32,43 @@
   </tr>
 </table>
 <img src="src/docs/images/slider-of-similar-movie.gif">
+
+# Installation
+
+<table>
+ <th> <b>git clone</b> https://github.com/sabedd00/js-movies.git</th>
+</table>
+
+After creation, your project should look like this:
+
+```
+js-movies/
+  src/
+    css/
+      main.css
+      movie-details.css
+    docs/
+      images/
+        main-page.png
+        movie-details.png
+        slider-of-similar-movie.gif
+    images/
+      empty-poster.png
+      tmdb-logo.svg
+    js/
+      config.js
+      index.js
+      movie-details.js
+      search-results.js
+  .gitignore    
+  README.md
+  index.html    
+  package.json
+  package-lock.json
+  webpack.config.js
+```
+
+In the project directory, you can run:
+
+### `npm run build`
+### `npm start`
