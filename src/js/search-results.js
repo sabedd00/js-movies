@@ -1,13 +1,23 @@
 'use strict';
 
 import {loadMovieDetails} from "./movie-details.js";
+import {
+    API_KEY,
+    BASE_IMAGE_URL,
+    BASE_URL, BIG_IMAGE_SIZE,
+    ENG_LANGUAGE,
+    LANGUAGE_QUERY,
+    MOVIES_SEARCH_QUERY,
+    QUERY_PAGE
+} from "./config";
 
 document.getElementById("searchForm").addEventListener("submit", loadSearchResults);
 let input = document.getElementById("searchText");
 let movieTitle = document.getElementById('movieTitle');
 let additionalMovieTitle = document.getElementById('additionalMovieTitle');
+let url = `BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + \`query=${input.value}\``;
 
-function loadSearchResults(evt) {
+export function loadSearchResults(evt) {
     let xhr = new XMLHttpRequest();
     let pageValue = 1;
     xhr.open("GET", BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${input.value}`, true);
@@ -69,7 +79,7 @@ function pagination(pageValue) {
     pageButtonPrev.addEventListener('click', function () {
         let xhr = new XMLHttpRequest();
         pageValue--;
-        xhr.open("GET", BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${input.value}`, true);
+        xhr.open("GET", url, true);
         window.scroll(0, 0);
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
