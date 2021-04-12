@@ -2,7 +2,7 @@
 
 import Logo from '../images/tmdb-logo.svg';
 import {loadMovieDetails} from "./movie-details.js";
-import '../css/main.css';
+import '../css/index.css';
 import {
     API_KEY, BASE_IMAGE_URL,
     BASE_URL, BIG_IMAGE_SIZE,
