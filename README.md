@@ -45,7 +45,7 @@ After creation, your project should look like this:
 js-movies/
   src/
     css/
-      main.css
+      index.css
       movie-details.css
     docs/
       images/
