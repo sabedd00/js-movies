@@ -18,76 +18,55 @@ export function loadMovieDetails(movieId) {
     let xhr = new XMLHttpRequest();
     let url = BASE_URL + `movie/${movieId}?` + API_KEY + QUERY_APPEND_TO_RESPONSE + 'videos,similar';
 
-    setMovieDetailsLoadEventListener(xhr);
+    setMovieDetailsOnLoadEventListener(xhr);
 
     getData(xhr, url);
 }
 
-function setMovieDetailsLoadEventListener(xhr) {
+function setMovieDetailsOnLoadEventListener(xhr) {
     xhr.addEventListener('load', function () {
             if (xhr.status === 200 && xhr.readyState === 4) {
                 let movieDetails = document.getElementById('mainContent');
                 let response = JSON.parse(xhr.responseText);
 
-                let background = BASE_IMAGE_URL + ORIGINAL_IMAGE_SIZE + response.backdrop_path;
-                document.body.style.backgroundImage = 'url(' + background + ')';
+                changeBackgroundByMovie(response);
                 window.scroll(0, 0);
 
                 movieDetails.innerHTML = ' ';
                 let main = document.createElement('main');
                 main.className = "movie-details";
 
-                let sectionDetails = document.createElement('section');
-                setDetails(response, sectionDetails)
+                let movieDetailsSection = document.createElement('section');
+                createMovieDetailsContent(response, movieDetailsSection);
 
-                let additionalDetails = document.createElement('section');
-                setAdditionalDetails(response, additionalDetails)
+                let additionalDetailsSection = document.createElement('section');
+                createAdditionalDetailsContent(response, additionalDetailsSection);
 
-                let similarMovies = document.createElement('section');
-                setSimilarMovies(response, similarMovies)
+                let similarMoviesSection = document.createElement('section');
+                createSimilarMoviesContent(response, similarMoviesSection);
 
-                main.append(sectionDetails, additionalDetails, similarMovies);
+                main.append(movieDetailsSection, additionalDetailsSection, similarMoviesSection);
                 movieDetails.appendChild(main);
 
-                if (response.similar.results[0] === undefined) {
-                    similarMovies.innerHTML = ' ';
-                } else {
-                    let similarMovieItem = document.getElementById('similarMovieItem');
-                    response.similar.results.forEach(function (movie) {
-                        let item = document.createElement('div');
-                        item.className = "similar-movie";
-                        item.id = "similarMovie"
-                        let poster = document.createElement('img');
-                        poster.className = "similar-movie__img";
-                        poster.src = `${BASE_IMAGE_URL + SMALL_IMAGE_SIZE + movie.poster_path}`;
-                        poster.alt = "Similar movie poster";
-                        let title = document.createElement('h3');
-                        title.className = "similar-movie__title";
-                        title.textContent = `${movie.title + ` (${new Date(movie.release_date).getFullYear()})`}`;
-                        item.append(poster, title);
-                        similarMovieItem.appendChild(item);
-                    })
-
-                    slider();
-                }
+                setSimilarMovies(response, similarMoviesSection);
             }
         }
     )
 }
 
-function setDetails(response, sectionDetails) {
+function createMovieDetailsContent(response, sectionDetails) {
     sectionDetails.className = "details";
     let posterContainer = document.createElement('div');
     posterContainer.className = "poster__img-container";
     let posterImg = document.createElement('img');
-    posterImg.className = "poster__img"
+    posterImg.className = "poster__img";
     posterImg.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + response.poster_path}`;
     posterImg.alt = "Poster";
     posterContainer.appendChild(posterImg);
     let detailsContent = document.createElement('div');
     detailsContent.className = "details__content";
     let movieTitle = document.createElement('h1');
-    movieTitle.className = "movie__title"
+    movieTitle.className = "movie__title";
     movieTitle.textContent = `${response.title + ` (${new Date(response.release_date).getFullYear()})`}`;
     let genresList = document.createElement('div');
     genresList.className = "genres__list";
@@ -102,7 +81,7 @@ function setDetails(response, sectionDetails) {
     sectionDetails.append(posterContainer, detailsContent);
 }
 
-function setAdditionalDetails(response, additionalDetails) {
+function createAdditionalDetailsContent(response, additionalDetails) {
     additionalDetails.className = "additional-details";
     let trailerContent = document.createElement('iframe');
     trailerContent.className = "trailer";
@@ -139,7 +118,7 @@ function setAdditionalDetails(response, additionalDetails) {
     }
 }
 
-function setSimilarMovies(response, similarMovies) {
+function createSimilarMoviesContent(response, similarMovies) {
     similarMovies.className = "similar-movies";
     let similarMoviesList = document.createElement('div');
     similarMoviesList.className = "similar-movies__list";
@@ -150,7 +129,31 @@ function setSimilarMovies(response, similarMovies) {
     similarMovies.appendChild(similarMoviesList);
 }
 
-function slider() {
+function setSimilarMovies(response, similarMovies) {
+    if (response.similar.results[0] === undefined) {
+        similarMovies.innerHTML = ' ';
+    } else {
+        let similarMovieItem = document.getElementById('similarMovieItem');
+        response.similar.results.forEach(function (movie) {
+            let item = document.createElement('div');
+            item.className = "similar-movie";
+            item.id = "similarMovie"
+            let poster = document.createElement('img');
+            poster.className = "similar-movie__img";
+            poster.src = `${BASE_IMAGE_URL + SMALL_IMAGE_SIZE + movie.poster_path}`;
+            poster.alt = "Similar movie poster";
+            let title = document.createElement('h3');
+            title.className = "similar-movie__title";
+            title.textContent = `${movie.title + ` (${new Date(movie.release_date).getFullYear()})`}`;
+            item.append(poster, title);
+            similarMovieItem.appendChild(item);
+        })
+
+        initSlider();
+    }
+}
+
+function initSlider() {
     tns({
         container: '.similar-movie__item',
         items: 4,
@@ -160,4 +163,9 @@ function slider() {
         "swipeAngle": false,
         "speed": 400,
     });
+}
+
+function changeBackgroundByMovie(response) {
+    let background = BASE_IMAGE_URL + ORIGINAL_IMAGE_SIZE + response.backdrop_path;
+    document.body.style.backgroundImage = 'url(' + background + ')';
 }
