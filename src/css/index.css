@@ -99,8 +99,7 @@ body {
     width: 10%;
 }
 
-.next-page__button,
-.prev-page__button {
+.next-page__button {
     width: 40%;
     height: 100%;
     margin: 5%;
@@ -114,8 +113,7 @@ body {
     background-image: linear-gradient(to right, #77A1D3 0%, #79CBCA 51%, #77A1D3 100%)
 }
 
-.next-page__button:hover,
-.prev-page__button:hover {
+.next-page__button:hover {
     background-position: right center;
     color: #fff;
     text-decoration: none;
