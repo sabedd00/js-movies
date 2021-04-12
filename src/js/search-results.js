@@ -1,6 +1,7 @@
 'use strict';
 
 import {loadMovieDetails} from "./movie-details.js";
+import {getData} from "./index";
 import {
     API_KEY,
     BASE_IMAGE_URL,
@@ -10,7 +11,6 @@ import {
     MOVIES_SEARCH_QUERY,
     QUERY_PAGE
 } from "./config";
-import {getData} from "./index";
 
 setSearchFromSubmitEventListener();
 

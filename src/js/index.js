@@ -12,6 +12,7 @@ import {
     QUERY_POPULAR_MOVIES,
 } from "./config";
 
+setHeaderLogoOnClickListener();
 loadPopularMovies();
 
 function loadPopularMovies() {
@@ -69,4 +70,11 @@ function setMovieItemClickEventListener(response, movieItem) {
 export function getData(xhr, url) {
     xhr.open('GET', url, true);
     xhr.send();
+}
+
+function setHeaderLogoOnClickListener() {
+    let headerLogo = document.getElementById('headerLogo');
+    headerLogo.addEventListener('click', function () {
+        window.location.reload();
+    })
 }
