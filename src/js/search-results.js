@@ -11,6 +11,7 @@ import {
     MOVIES_SEARCH_QUERY,
     QUERY_PAGE
 } from "./config";
+import {setMovieCardClickListener} from "./index";
 
 setSearchFromSubmitEventListener();
 
@@ -34,11 +35,10 @@ export function loadSearchResults(evt) {
             additionalMovieTitle.textContent = ' ';
             movieTitle.textContent = `Search Results: ${response.total_results} movies`;
 
-            response.results.forEach(function (movie) {
-                createResultItemContent(movieItem, movie);
-            });
+            createMovieCardContent(movieItem, response);
 
-            setResultItemOnClickEventListener(response);
+            let popularMovieItem = document.getElementsByClassName('popular-movie__item');
+            setMovieCardClickListener(response, popularMovieItem);
             initPagination(pageValue);
         }
     }
@@ -51,66 +51,78 @@ function setSearchFromSubmitEventListener() {
     document.getElementById("searchForm").addEventListener("submit", loadSearchResults);
 }
 
-function initPagination(pageValue) {
+export function initPagination(pageValue) {
     let main = document.getElementById('mainContent');
     let pagination = document.createElement('div');
     pagination.className = "pagination";
+    let prevPageButton = document.createElement('button');
+    prevPageButton.className = "prev-page__button";
+    prevPageButton.textContent = "← Prev page";
     let nextPageButton = document.createElement('button');
     nextPageButton.className = "next-page__button";
-    nextPageButton.textContent = "Next";
-    pagination.appendChild(nextPageButton);
+    nextPageButton.textContent = "Next page →";
+    pagination.append(prevPageButton, nextPageButton);
     main.appendChild(pagination);
 
-    setNextPageOfResultsOnClickEventListener(pageValue, nextPageButton);
+    setBtnChangePageListener(pageValue, prevPageButton, nextPageButton);
 }
 
-function setNextPageOfResultsOnClickEventListener(pageValue, nextPageButton) {
+function setBtnChangePageListener(pageValue, prevPageButton, nextPageButton) {
     nextPageButton.addEventListener('click', function () {
         let xhr = new XMLHttpRequest();
         let url = BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${input.value}`;
         pageValue++;
-        window.scroll(0, 0);
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 let response = JSON.parse(xhr.responseText);
-                let movieItem = document.getElementById('movieItem');
 
-                movieItem.innerHTML = ' ';
-                response.results.forEach(function (movie) {
-                    createResultItemContent(movieItem, movie);
-                });
-
-                setResultItemOnClickEventListener(response);
+                setMovieList(xhr, response);
             }
         }
-
         getData(xhr, url);
     });
+
+    prevPageButton.addEventListener('click', function () {
+        let xhr = new XMLHttpRequest();
+        let url = BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${input.value}`;
+        pageValue--;
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let response = JSON.parse(xhr.responseText);
+
+                setMovieList(xhr, response);
+            }
+        }
+        getData(xhr, url);
+    })
 }
 
-function createResultItemContent(movieItem, movie) {
-    let releaseYear = new Date(movie.release_date).getFullYear();
-    let resultItem = document.createElement('div');
-    resultItem.className = "search-movie-result__item";
-    resultItem.id = "resultItem";
-    let poster = document.createElement('img');
-    poster.className = "search-movie-result__item__img";
-    poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + movie.poster_path}`;
-    poster.alt = "Search result movie poster";
-    let title = document.createElement('h3');
-    title.className = "search-movie-result__item__title";
-    title.textContent = `${movie.title + ` (${releaseYear})`}`;
-    resultItem.append(poster, title);
-    movieItem.appendChild(resultItem);
+function setMovieList(xhr, response) {
+    let movieItem = document.getElementById('movieItem');
+
+    movieItem.innerHTML = ' ';
+    createMovieCardContent(movieItem, response);
+
+    let popularMovieItem = document.getElementsByClassName('popular-movie__item');
+    setMovieCardClickListener(response, popularMovieItem);
 }
 
-function setResultItemOnClickEventListener(response) {
-    let searchResultItem = document.getElementsByClassName('search-movie-result__item');
-    for (let i = 0; i < searchResultItem.length; i++) {
-        searchResultItem[i].addEventListener('click', () => {
-            let id = response.results[i].id;
-            loadMovieDetails(id);
-        });
-    }
+export function createMovieCardContent(movieItem, response) {
+    response.results.forEach(function (movie) {
+        let item = document.createElement('div');
+        item.className = "popular-movie__item";
+        item.id = "popularMovieItem";
+        let poster = document.createElement('img');
+        poster.className = "popular-movie__item__img";
+        poster.id = "posterOfPopularMovie"
+        poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + movie.poster_path}`;
+        poster.alt = "Poster of a popular movie";
+        let title = document.createElement('h3');
+        title.className = "popular-movie__item__title";
+        title.textContent = `${movie.title + ` (${new Date(movie.release_date).getFullYear()})`}`;
+        item.append(poster, title);
+        movieItem.appendChild(item);
+    });
 }

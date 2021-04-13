@@ -57,7 +57,6 @@ body {
 }
 
 .popular-movie__item__img:hover,
-.search-movie-result__item__img:hover,
 .top-rated__item__img:hover {
     filter: brightness(40%);
     box-shadow: 10px 10px rgba(0, 0, 0, 0.4);
@@ -66,14 +65,12 @@ body {
 }
 
 .popular-movie__item__img,
-.search-movie-result__item__img,
 .top-rated__item__img {
     max-width: 100%;
     transition: .4s;
 }
 
 .popular-movie__item__title,
-.search-movie-result__item__title,
 .top-rated__item__title {
     color: #c8c0ed;
     margin-top: .2em;
@@ -95,27 +92,15 @@ body {
 }
 
 .pagination {
-    margin: auto;
-    padding: 0;
-    width: 10%;
+    position: relative;
 }
 
-.next-page__button {
-    width: 40%;
-    height: 100%;
-    margin: 5%;
-    padding: 4%;
-    text-transform: uppercase;
-    transition: 0.5s;
-    background-size: 200% auto;
+.next-page__button,
+.prev-page__button {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
     color: white;
-    box-shadow: 0 0 15px #eee;
-    border-radius: 5%;
-    background-image: linear-gradient(to right, #77A1D3 0%, #79CBCA 51%, #77A1D3 100%)
-}
-
-.next-page__button:hover {
-    background-position: right center;
-    color: #fff;
-    text-decoration: none;
+    cursor: pointer;
+    outline: none;
 }
