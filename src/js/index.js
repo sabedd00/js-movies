@@ -7,11 +7,10 @@ import {
     API_KEY, BASE_IMAGE_URL,
     BASE_URL, BIG_IMAGE_SIZE,
     ENG_LANGUAGE,
-    LANGUAGE_QUERY,
+    LANGUAGE_QUERY, MOVIES_SEARCH_QUERY,
     QUERY_PAGE,
     QUERY_POPULAR_MOVIES,
 } from "./config";
-import {createMovieCardContent} from "./search-results";
 
 setHeaderLogoOnClickListener();
 loadPopularMovies();
@@ -22,22 +21,50 @@ function loadPopularMovies() {
 
     xhr.onreadystatechange = function () {
         if (xhr.status === 200 && xhr.readyState === 4) {
-            let movieItem = document.getElementById('movieItem');
+            let movieList = document.getElementById('movieList');
             let movieTitle = document.getElementById('movieTitle');
-            movieItem.innerHTML = ' ';
-            movieTitle.textContent = "Popular";
+            movieList.innerHTML = ' ';
+            movieTitle.textContent = "Popular movies";
 
             document.body.style.background = '#1a143b';
             let response = JSON.parse(xhr.responseText);
 
-            createMovieCardContent(movieItem, response);
+            createMovieCardContent(movieList, response);
 
-            let popularMovieItem = document.getElementsByClassName('popular-movie__item');
-            setMovieCardClickListener(response, popularMovieItem);
+            let movieItem = document.getElementsByClassName('movie__item');
+            setMovieCardClickListener(response, movieItem);
         }
     }
 
     getData(xhr, url);
+}
+
+export function createMovieCardContent(movieItem, response) {
+    response.results.forEach(function (movie) {
+        let item = document.createElement('div');
+        item.className = "movie__item";
+        item.id = "movieItem";
+        let poster = document.createElement('img');
+        poster.className = "movie__item__img";
+        poster.id = "moviePoster"
+        poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + movie.poster_path}`;
+        poster.alt = "Movie poster";
+        let title = document.createElement('h3');
+        title.className = "movie__item__title";
+        title.textContent = `${movie.title + ` (${new Date(movie.release_date).getFullYear()})`}`;
+        item.append(poster, title);
+        movieItem.appendChild(item);
+    });
+}
+
+function setMovieList(xhr, response) {
+    let movieList = document.getElementById('movieList');
+
+    movieList.innerHTML = ' ';
+    createMovieCardContent(movieList, response);
+
+    let movieItem = document.getElementsByClassName('movie__item');
+    setMovieCardClickListener(response, movieItem);
 }
 
 export function setMovieCardClickListener(response, movieItem) {
@@ -58,5 +85,55 @@ function setHeaderLogoOnClickListener() {
     let headerLogo = document.getElementById('headerLogo');
     headerLogo.addEventListener('click', function () {
         window.location.reload();
+    })
+}
+
+export function initPagination(pageValue) {
+    let main = document.getElementById('mainContent');
+    let pagination = document.createElement('div');
+    pagination.className = "pagination";
+    let prevPageButton = document.createElement('button');
+    prevPageButton.className = "prev-page__button";
+    prevPageButton.textContent = "← Prev page";
+    let nextPageButton = document.createElement('button');
+    nextPageButton.className = "next-page__button";
+    nextPageButton.textContent = "Next page →";
+    pagination.append(prevPageButton, nextPageButton);
+    main.appendChild(pagination);
+
+    setBtnChangePageListener(pageValue, prevPageButton, nextPageButton);
+}
+
+export function setBtnChangePageListener(pageValue, prevPageButton, nextPageButton) {
+    let input = document.getElementById("searchText");
+
+    nextPageButton.addEventListener('click', function () {
+        let xhr = new XMLHttpRequest();
+        pageValue++;
+        let url = BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${input.value}`;
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let response = JSON.parse(xhr.responseText);
+
+                setMovieList(xhr, response);
+            }
+        }
+        getData(xhr, url);
+    });
+
+    prevPageButton.addEventListener('click', function () {
+        let xhr = new XMLHttpRequest();
+        pageValue--;
+        let url = BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${input.value}`;
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let response = JSON.parse(xhr.responseText);
+
+                setMovieList(xhr, response);
+            }
+        }
+        getData(xhr, url);
     })
 }

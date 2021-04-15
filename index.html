@@ -1,33 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <title><%= htmlWebpackPlugin.options.title %></title>
     <script src="./config.bundle.js"></script>
     <script src="./movieDetails.bundle.js"></script>
     <script src="./searchResults.bundle.js"></script>
-</head>
-<body>
-<header class="header">
-    <div class="header__content">
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="header__content">
         <img class="header-logo__img" id="headerLogo" src="./bb8aa703cb92c9aa31fc.svg" alt="logo">
-        <div class="search__content">
-            <form id="searchForm">
-                <input class="form-control" id="searchText" placeholder="Search Movie....">
-            </form>
+        <div class="search">
+          <form id="searchForm">
+            <input class="form-control" id="searchText" placeholder="Search Movie....">
+          </form>
         </div>
-    </div>
-</header>
+      </div>
+    </header>
 
-<div class="main-content" id="mainContent">
-    <div class="movies-list__content" id="moviesList">
+    <div class="main">
+      <div class="main__content" id="mainContent">
         <h2 class="movie__title" id="movieTitle"></h2>
-        <div class="movie__item" id="movieItem"></div>
-        <h2 class="additional-movie__title" id="additionalMovieTitle"></h2>
-        <div class="additional-movie__item" id="additionalMovieItem"></div>
+        <div class="movie-list">
+          <div class="movie-list__content" id="movieList"></div>
+        </div>
+      </div>
     </div>
-</div>
 
-<script src="index.bundle.js"></script>
-</body>
+    <script src="index.bundle.js"></script>
+  </body>
+
 </html>
