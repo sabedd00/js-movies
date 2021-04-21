@@ -106,25 +106,34 @@ body {
     height: 100%;
     background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
     color: white;
+    position: relative;
+    margin: auto;
+    clear: both;
 }
 
-.similar-movies__list {
+.similar-movies__content {
     padding: 1%;
     text-align: center;
 }
 
-.similar-movie__item {
+.similar-movie__list {
     display: grid;
+    margin-left: -800px;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     grid-gap: 0.2%;
     text-align: center;
 }
 
-.tns-nav {
-    display: none;
+.similar-movie__item {
+    display: inline-block;
+}
+
+.similar-movie__img {
+    display: block;
 }
 
 .similar-movie__title {
+    display: block;
     width: 180px;
     margin: auto;
     padding: 0;

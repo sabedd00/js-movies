@@ -2,7 +2,6 @@
 
 import {getData} from './index.js';
 import logo from '../images/tmdb-logo.svg';
-import {tns} from '../../node_modules/tiny-slider/src/tiny-slider.js';
 import {
     API_KEY,
     BASE_IMAGE_URL,
@@ -67,7 +66,7 @@ function createMovieDetailsContent(response, sectionDetails) {
     detailsContent.className = "details__content";
     let movieTitle = document.createElement('h1');
     movieTitle.className = "movie__title";
-    movieTitle.textContent = `${response.title + ` (${new Date(response.release_date).getFullYear()})`}`;
+    movieTitle.textContent = `${response.title}` + ` (${new Date(response.release_date).getFullYear()})`;
     let genresList = document.createElement('div');
     genresList.className = "genres__list";
     genresList.innerHTML = `${response.genres.map(genre => genre.name).join(', ')}`;
@@ -120,23 +119,30 @@ function createAdditionalDetailsContent(response, additionalDetails) {
 
 function createSimilarMoviesContent(response, similarMovies) {
     similarMovies.className = "similar-movies";
-    let similarMoviesList = document.createElement('div');
-    similarMoviesList.className = "similar-movies__list";
-    let similarItem = document.createElement('div');
-    similarItem.className = "similar-movie__item";
-    similarItem.id = "similarMovieItem";
-    similarMoviesList.appendChild(similarItem);
-    similarMovies.appendChild(similarMoviesList);
+    let similarMoviesContent = document.createElement('div');
+    similarMoviesContent.className = "similar-movies__content";
+    similarMoviesContent.id = "similarMoviesContent"
+    let buttonPrev = document.createElement('button');
+    buttonPrev.textContent = '⇦';
+    buttonPrev.className = 'arrow prev';
+    let buttonNext = document.createElement('button');
+    buttonNext.textContent = '⇨';
+    buttonNext.className = 'arrow next';
+    let similarMovieList = document.createElement('div');
+    similarMovieList.className = "similar-movie__list";
+    similarMovieList.id = "similarMovieList"
+    similarMoviesContent.append(buttonPrev, similarMovieList, buttonNext);
+    similarMovies.appendChild(similarMoviesContent);
 }
 
 function setSimilarMovies(response, similarMovies) {
     if (response.similar.results[0] === undefined) {
         similarMovies.innerHTML = ' ';
     } else {
-        let similarMovieItem = document.getElementById('similarMovieItem');
+        let similarMovieList = document.getElementById('similarMovieList');
         response.similar.results.forEach(function (movie) {
             let item = document.createElement('div');
-            item.className = "similar-movie";
+            item.className = "similar-movie__item";
             item.id = "similarMovie"
             let poster = document.createElement('img');
             poster.className = "similar-movie__img";
@@ -144,9 +150,9 @@ function setSimilarMovies(response, similarMovies) {
             poster.alt = "Similar movie poster";
             let title = document.createElement('h3');
             title.className = "similar-movie__title";
-            title.textContent = `${movie.title + ` (${new Date(movie.release_date).getFullYear()})`}`;
+            title.textContent = `${movie.title}` + ` (${new Date(movie.release_date).getFullYear()})`;
             item.append(poster, title);
-            similarMovieItem.appendChild(item);
+            similarMovieList.appendChild(item);
         })
 
         initSlider();
@@ -154,15 +160,32 @@ function setSimilarMovies(response, similarMovies) {
 }
 
 function initSlider() {
-    tns({
-        container: '.similar-movie__item',
-        items: 4,
-        "mouseDrag": true,
-        "slideBy": "page",
-        "rewind": true,
-        "swipeAngle": false,
-        "speed": 400,
-    });
+    let i = 1;
+    let similarList = document.getElementById('similarMoviesContent');
+    for (let item of similarList.querySelectorAll('div')) {
+        item.style.position = 'relative';
+        i++;
+    }
+
+    let width = 130;
+    let count = 1;
+
+    let list = similarList.querySelector('div');
+    let listElem = similarList.querySelectorAll('div');
+
+    let position = 0;
+
+    similarList.querySelector('.prev').onclick = function () {
+        position += width * count;
+        position = Math.min(position, 0);
+        list.style.marginLeft = position + 'px';
+    };
+
+    similarList.querySelector('.next').onclick = function () {
+        position -= width * count;
+        position = Math.max(position, -width * (listElem.length - count));
+        list.style.marginLeft = position + 'px';
+    };
 }
 
 function changeBackgroundByMovie(response) {
