@@ -88,3 +88,15 @@ body {
     cursor: pointer;
     outline: none;
 }
+
+.footer {
+    text-align: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+}
+
+.footer__text {
+    padding: 1%;
+    color: white;
+    font-size: 1.2em;
+    margin-bottom: 0;
+}

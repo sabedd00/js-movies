@@ -12,6 +12,8 @@ import {
     URL_YOUTUBE
 } from "./config";
 import '../css/movie-details.css';
+import Glider from '/node_modules/glider-js/glider.min.js';
+import '/node_modules/glider-js/glider.min.css';
 
 export function loadMovieDetails(movieId) {
     let xhr = new XMLHttpRequest();
@@ -119,19 +121,22 @@ function createAdditionalDetailsContent(response, additionalDetails) {
 
 function createSimilarMoviesContent(response, similarMovies) {
     similarMovies.className = "similar-movies";
+    similarMovies.id = 'similarMovies';
     let similarMoviesContent = document.createElement('div');
     similarMoviesContent.className = "similar-movies__content";
-    similarMoviesContent.id = "similarMoviesContent"
-    let buttonPrev = document.createElement('button');
-    buttonPrev.textContent = '⇦';
-    buttonPrev.className = 'arrow prev';
-    let buttonNext = document.createElement('button');
-    buttonNext.textContent = '⇨';
-    buttonNext.className = 'arrow next';
+    similarMoviesContent.id = "similarMoviesContent";
     let similarMovieList = document.createElement('div');
     similarMovieList.className = "similar-movie__list";
-    similarMovieList.id = "similarMovieList"
-    similarMoviesContent.append(buttonPrev, similarMovieList, buttonNext);
+    similarMovieList.id = "similarMovieList";
+    let buttonPrev = document.createElement('button');
+    buttonPrev.className = 'glider-prev';
+    buttonPrev.textContent = '<';
+    let buttonNext = document.createElement('button');
+    buttonNext.className = 'glider-next';
+    buttonNext.textContent = '>';
+    let sliderDots = document.createElement('div');
+    sliderDots.className = 'dots';
+    similarMoviesContent.append(similarMovieList, buttonPrev, buttonNext, sliderDots);
     similarMovies.appendChild(similarMoviesContent);
 }
 
@@ -160,32 +165,16 @@ function setSimilarMovies(response, similarMovies) {
 }
 
 function initSlider() {
-    let i = 1;
-    let similarList = document.getElementById('similarMoviesContent');
-    for (let item of similarList.querySelectorAll('div')) {
-        item.style.position = 'relative';
-        i++;
-    }
-
-    let width = 130;
-    let count = 1;
-
-    let list = similarList.querySelector('div');
-    let listElem = similarList.querySelectorAll('div');
-
-    let position = 0;
-
-    similarList.querySelector('.prev').onclick = function () {
-        position += width * count;
-        position = Math.min(position, 0);
-        list.style.marginLeft = position + 'px';
-    };
-
-    similarList.querySelector('.next').onclick = function () {
-        position -= width * count;
-        position = Math.max(position, -width * (listElem.length - count));
-        list.style.marginLeft = position + 'px';
-    };
+    new Glider(document.querySelector('.similar-movie__list'), {
+        slidesToShow: 8,
+        slidesToScroll: 3,
+        draggable: true,
+        dots: '.dots',
+        arrows: {
+            prev: '.glider-prev',
+            next: '.glider-next'
+        }
+    });
 }
 
 function changeBackgroundByMovie(response) {
