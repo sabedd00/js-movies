@@ -105,7 +105,7 @@ export function initPagination(pageValue) {
 }
 
 export function setBtnChangePageListener(pageValue, prevPageButton, nextPageButton) {
-    let input = document.getElementById("searchText");
+    let input = document.getElementById("searchInput");
 
     nextPageButton.addEventListener('click', function () {
         let xhr = new XMLHttpRequest();

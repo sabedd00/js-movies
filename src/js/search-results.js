@@ -15,12 +15,12 @@ import {
     getData
 } from "./index";
 
-setSearchFromSubmitEventListener();
+setSearchFormEventListeners();
 
 export function loadSearchResults(evt) {
     let xhr = new XMLHttpRequest();
     let pageValue = 1;
-    let input = document.getElementById("searchText");
+    let input = document.getElementById("searchInput");
 
     let url = BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${input.value}`;
 
@@ -46,6 +46,24 @@ export function loadSearchResults(evt) {
     evt.preventDefault();
 }
 
-function setSearchFromSubmitEventListener() {
-    document.getElementById("searchForm").addEventListener("submit", loadSearchResults);
+function setSearchFormEventListeners() {
+    let searchForm = document.getElementById("searchForm");
+    let input = document.getElementById('searchInput');
+
+    input.addEventListener("keypress", function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                loadSearchResults();
+            }
+        }
+    );
+
+    searchForm.addEventListener("focusout", function () {
+        input.style.borderBottom = 'none';
+        input.value = '';
+    });
+
+    input.addEventListener('keypress', function () {
+        input.style.borderBottom = 'solid #eeeeee 1px';
+    });
 }
