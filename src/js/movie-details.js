@@ -1,6 +1,6 @@
 'use strict';
 
-import {getData} from './index.js';
+import {getData, setMovieCardClickListener} from './index.js';
 import logo from '../images/tmdb-logo.svg';
 import {
     API_KEY,
@@ -40,16 +40,19 @@ function setMovieDetailsOnLoadEventListener(xhr) {
                 let movieDetailsSection = document.createElement('section');
                 createMovieDetailsContent(response, movieDetailsSection);
 
-                let additionalDetailsSection = document.createElement('section');
-                createAdditionalDetailsContent(response, additionalDetailsSection);
+                let trailerSection = document.createElement('section');
+                createTrailerContent(response, trailerSection);
 
                 let similarMoviesSection = document.createElement('section');
                 createSimilarMoviesContent(response, similarMoviesSection);
 
-                main.append(movieDetailsSection, additionalDetailsSection, similarMoviesSection);
+                main.append(movieDetailsSection, trailerSection, similarMoviesSection);
                 movieDetails.appendChild(main);
 
                 setSimilarMovies(response, similarMoviesSection);
+
+                let similarMovieItem = document.getElementsByClassName('similar-movie__item');
+                setMovieCardClickListener(response, similarMovieItem);
             }
         }
     )
@@ -78,17 +81,8 @@ function createMovieDetailsContent(response, sectionDetails) {
     overviewText.className = "overview__text";
     overviewText.textContent = `${response.overview}`;
     overviewContainer.appendChild(overviewText);
-    detailsContent.append(movieTitle, genresList, overviewContainer);
-    sectionDetails.append(posterContainer, detailsContent);
-}
-
-function createAdditionalDetailsContent(response, additionalDetails) {
+    let additionalDetails = document.createElement('div');
     additionalDetails.className = "additional-details";
-    let trailerContent = document.createElement('iframe');
-    trailerContent.className = "trailer";
-    trailerContent.src = `${URL_YOUTUBE + response.videos.results[0].key}`;
-    trailerContent.width = '800px';
-    trailerContent.height = '450px';
     let runtimeContainer = document.createElement('div');
     runtimeContainer.className = "running-time";
     runtimeContainer.innerHTML = '<br>Running Time:<br>';
@@ -109,14 +103,26 @@ function createAdditionalDetailsContent(response, additionalDetails) {
     let budgetData = document.createElement('span');
     budgetData.className = "meta-data";
     budgetContainer.appendChild(budgetData);
-    additionalDetails.append(trailerContent, runtimeContainer, voteAverageContainer, budgetContainer);
+    additionalDetails.append(runtimeContainer, voteAverageContainer, budgetContainer);
+    detailsContent.append(movieTitle, genresList, overviewContainer, additionalDetails);
+    sectionDetails.append(posterContainer, detailsContent);
 
     if (response.budget.toLocaleString() !== '0') {
         budgetData.innerHTML = '$' + response.budget.toLocaleString();
     } else {
         budgetContainer.innerHTML = ' ';
-        additionalDetails.style.gridTemplateAreas = '" v v " "  k j "';
+        detailsContent.style.gridTemplateAreas = '" v v " "  k j "';
     }
+}
+
+function createTrailerContent(response, trailerContent) {
+    trailerContent.className = "trailer__content";
+    let trailer = document.createElement('iframe');
+    trailer.className = "trailer";
+    trailer.src = `${URL_YOUTUBE + response.videos.results[0].key}`;
+    trailer.width = '800px';
+    trailer.height = '450px';
+    trailerContent.append(trailer);
 }
 
 function createSimilarMoviesContent(response, similarMovies) {

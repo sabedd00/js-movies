@@ -32,7 +32,7 @@ export function loadSearchResults(evt) {
             let response = JSON.parse(xhr.responseText);
 
             movieList.innerHTML = ' ';
-            movieTitle.textContent = `Search Results: ${response.total_results} movies`;
+            movieTitle.textContent = `Found ${response.total_results} movies`;
 
             createMovieCardContent(movieList, response);
 

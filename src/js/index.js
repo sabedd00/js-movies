@@ -73,6 +73,10 @@ export function setMovieCardClickListener(response, movieItem) {
             let id = response.results[i].id;
             loadMovieDetails(id);
         });
+        movieItem[i].addEventListener('click', () => {
+            let id = response.similar.results[i].id;
+            loadMovieDetails(id);
+        })
     }
 }
 
