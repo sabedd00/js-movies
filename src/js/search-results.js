@@ -32,13 +32,22 @@ export function loadSearchResults(evt) {
             let response = JSON.parse(xhr.responseText);
 
             movieList.innerHTML = ' ';
-            movieTitle.textContent = `Found ${response.total_results} movies`;
+            if (response.total_results === 0) {
+                movieTitle.textContent = `Movie not found`;
+                movieTitle.style.textAlign = 'center';
+                let footer = document.getElementById('footer');
+                footer.style.position = 'absolute';
+                footer.style.bottom = '0';
+                footer.style.width = '100%'
+            } else {
+                movieTitle.textContent = `Found ${response.total_results} movies`;
+                initPagination(pageValue);
+            }
 
             createMovieCardContent(movieList, response);
 
             let movieItem = document.getElementsByClassName('movie__item');
             setMovieCardClickListener(response, movieItem);
-            initPagination(pageValue);
         }
     }
 
@@ -47,7 +56,6 @@ export function loadSearchResults(evt) {
 }
 
 function setSearchFormEventListeners() {
-    let searchForm = document.getElementById("searchForm");
     let input = document.getElementById('searchInput');
 
     input.addEventListener("keypress", function (event) {
@@ -57,11 +65,6 @@ function setSearchFormEventListeners() {
             }
         }
     );
-
-    searchForm.addEventListener("focusout", function () {
-        input.style.borderBottom = 'none';
-        input.value = '';
-    });
 
     input.addEventListener('keypress', function () {
         input.style.borderBottom = 'solid #eeeeee 1px';

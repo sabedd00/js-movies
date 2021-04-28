@@ -110,11 +110,12 @@ export function initPagination(pageValue) {
 
 export function setBtnChangePageListener(pageValue, prevPageButton, nextPageButton) {
     let input = document.getElementById("searchInput");
+    let inputValue = input.value;
 
     nextPageButton.addEventListener('click', function () {
         let xhr = new XMLHttpRequest();
         pageValue++;
-        let url = BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${input.value}`;
+        let url = BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${inputValue}`;
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -129,7 +130,7 @@ export function setBtnChangePageListener(pageValue, prevPageButton, nextPageButt
     prevPageButton.addEventListener('click', function () {
         let xhr = new XMLHttpRequest();
         pageValue--;
-        let url = BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${input.value}`;
+        let url = BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${inputValue}`;
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
