@@ -21,15 +21,13 @@ function loadPopularMovies() {
 
     xhr.onreadystatechange = function () {
         if (xhr.status === 200 && xhr.readyState === 4) {
-            let movieList = document.getElementById('movieList');
             let movieTitle = document.getElementById('movieTitle');
-            movieList.innerHTML = ' ';
             movieTitle.textContent = "Popular movies";
 
             document.body.style.background = '#1a143b';
             let response = JSON.parse(xhr.responseText);
 
-            createMovieCardContent(movieList, response);
+            createMovieCardContent(response);
 
             let movieItem = document.getElementsByClassName('movie__item');
             setMovieCardClickListener(response, movieItem);
@@ -39,7 +37,14 @@ function loadPopularMovies() {
     getData(xhr, url);
 }
 
-export function createMovieCardContent(movieItem, response) {
+export function createMovieCardContent(response) {
+    let mainContent = document.getElementById('mainContent');
+    mainContent.innerHTML = ' ';
+    let movieList = document.createElement('div');
+    movieList.className = 'movie-list';
+    let movieListContent = document.createElement('div');
+    movieListContent.className = 'movie-list__content';
+    movieListContent.id = 'movieList';
     response.results.forEach(function (movie) {
         let item = document.createElement('div');
         item.className = "movie__item";
@@ -53,15 +58,14 @@ export function createMovieCardContent(movieItem, response) {
         title.className = "movie__item__title";
         title.textContent = `${movie.title + ` (${new Date(movie.release_date).getFullYear()})`}`;
         item.append(poster, title);
-        movieItem.appendChild(item);
+        movieListContent.append(item);
     });
+    movieList.appendChild(movieListContent);
+    mainContent.append(movieList);
 }
 
 function setMovieList(xhr, response) {
-    let movieList = document.getElementById('movieList');
-
-    movieList.innerHTML = ' ';
-    createMovieCardContent(movieList, response);
+    createMovieCardContent(response);
 
     let movieItem = document.getElementsByClassName('movie__item');
     setMovieCardClickListener(response, movieItem);
@@ -93,7 +97,7 @@ function setHeaderLogoOnClickListener() {
 }
 
 export function initPagination(pageValue) {
-    let main = document.getElementById('mainContent');
+    let mainContent = document.getElementById('mainContent');
     let pagination = document.createElement('div');
     pagination.className = "pagination";
     let prevPageButton = document.createElement('button');
@@ -103,7 +107,7 @@ export function initPagination(pageValue) {
     nextPageButton.className = "next-page__button";
     nextPageButton.textContent = "Next page →";
     pagination.append(prevPageButton, nextPageButton);
-    main.appendChild(pagination);
+    mainContent.append(pagination);
 
     setBtnChangePageListener(pageValue, prevPageButton, nextPageButton);
 }

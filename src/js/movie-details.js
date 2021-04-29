@@ -14,6 +14,9 @@ import {
 import '../css/movie-details.css';
 import Glider from '/node_modules/glider-js/glider.min.js';
 import '/node_modules/glider-js/glider.min.css';
+import {setSearchFormEventListeners} from "./search-results";
+
+setSearchFormEventListeners();
 
 export function loadMovieDetails(movieId) {
     let xhr = new XMLHttpRequest();
@@ -28,12 +31,14 @@ function setMovieDetailsOnLoadEventListener(xhr) {
     xhr.addEventListener('load', function () {
             if (xhr.status === 200 && xhr.readyState === 4) {
                 let movieDetails = document.getElementById('mainContent');
+                let mainTitle = document.getElementById('movieTitle');
                 let response = JSON.parse(xhr.responseText);
 
                 changeBackgroundByMovie(response);
                 window.scroll(0, 0);
 
                 movieDetails.innerHTML = ' ';
+                mainTitle.innerHTML = ' ';
                 let main = document.createElement('main');
                 main.className = "movie-details";
 
