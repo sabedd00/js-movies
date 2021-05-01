@@ -107,7 +107,7 @@ body {
 
 .similar-movies {
     grid-area: c;
-    width: 99%;
+    width: 100%;
     margin: auto;
     background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
     color: #ffffff;
@@ -115,8 +115,6 @@ body {
 }
 
 .similar-movies__content {
-    padding: 1%;
-    margin-top: 0.5%;
     position: relative;
     text-align: center;
 }
@@ -146,4 +144,19 @@ body {
     font-family: 'Roboto', serif;
     font-weight: 500;
     color: #ffffff;
+}
+
+.glider-prev {
+    margin-left: 3%;
+}
+
+.glider-next {
+    margin-right: 3%;
+}
+
+.glider-next.disabled, .glider-prev.disabled {
+}
+
+.glider-prev:hover,
+.glider-next:hover {
 }

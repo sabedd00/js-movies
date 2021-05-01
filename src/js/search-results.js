@@ -10,9 +10,8 @@ import {
 } from "./config";
 import {
     setMovieCardClickListener,
-    createMovieCardContent,
     initPagination,
-    getData
+    getData, createMovieListContent
 } from "./index";
 
 setSearchFormEventListeners();
@@ -27,11 +26,14 @@ export function loadSearchResults(evt) {
     xhr.onload = function () {
         if (xhr.status === 200 && xhr.readyState === 4) {
             let mainContent = document.getElementById('mainContent');
-            let movieTitle = document.getElementById('movieTitle');
             let footer = document.getElementById('footer');
             let response = JSON.parse(xhr.responseText);
 
             mainContent.innerHTML = ' ';
+
+            createMovieListContent(response);
+
+            let movieTitle = document.getElementById('movieTitle');
             if (response.total_results === 0) {
                 movieTitle.textContent = `Movie not found`;
                 movieTitle.style.textAlign = 'center';
@@ -44,8 +46,6 @@ export function loadSearchResults(evt) {
                 footer.style.position = 'relative';
                 initPagination(pageValue);
             }
-
-            createMovieCardContent(response);
 
             let movieItem = document.getElementsByClassName('movie__item');
             setMovieCardClickListener(response, movieItem);

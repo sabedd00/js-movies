@@ -21,13 +21,10 @@ function loadPopularMovies() {
 
     xhr.onreadystatechange = function () {
         if (xhr.status === 200 && xhr.readyState === 4) {
-            let movieTitle = document.getElementById('movieTitle');
-            movieTitle.textContent = "Popular movies";
-
             document.body.style.background = '#1a143b';
             let response = JSON.parse(xhr.responseText);
 
-            createMovieCardContent(response);
+            createMovieListContent(response);
 
             let movieItem = document.getElementsByClassName('movie__item');
             setMovieCardClickListener(response, movieItem);
@@ -37,14 +34,25 @@ function loadPopularMovies() {
     getData(xhr, url);
 }
 
-export function createMovieCardContent(response) {
+export function createMovieListContent(response) {
     let mainContent = document.getElementById('mainContent');
     mainContent.innerHTML = ' ';
+    let mainTitle = document.createElement('h2');
+    mainTitle.className = 'movie__title';
+    mainTitle.id = 'movieTitle';
+    mainTitle.textContent = 'Popular movies';
     let movieList = document.createElement('div');
     movieList.className = 'movie-list';
     let movieListContent = document.createElement('div');
     movieListContent.className = 'movie-list__content';
     movieListContent.id = 'movieList';
+    movieList.appendChild(movieListContent);
+    mainContent.append(mainTitle, movieList);
+
+    createMovieCardContent(response, movieListContent);
+}
+
+function createMovieCardContent(response, movieListContent) {
     response.results.forEach(function (movie) {
         let item = document.createElement('div');
         item.className = "movie__item";
@@ -60,12 +68,10 @@ export function createMovieCardContent(response) {
         item.append(poster, title);
         movieListContent.append(item);
     });
-    movieList.appendChild(movieListContent);
-    mainContent.append(movieList);
 }
 
 function setMovieList(xhr, response) {
-    createMovieCardContent(response);
+    createMovieListContent(response);
 
     let movieItem = document.getElementsByClassName('movie__item');
     setMovieCardClickListener(response, movieItem);
