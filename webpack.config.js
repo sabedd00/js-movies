@@ -8,7 +8,7 @@ module.exports = {
         index: './src/js/index.js',
         config: './src/js/config.js',
         movieDetails: './src/js/movie-details.js',
-        searchResults: './src/js/search-results.js'
+        searchResults: './src/js/search-results.js',
     },
     output: {
         filename: '[name].bundle.js',

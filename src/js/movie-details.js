@@ -31,127 +31,47 @@ function setMovieDetailsOnLoadEventListener(xhr) {
     xhr.addEventListener('load', function () {
             if (xhr.status === 200 && xhr.readyState === 4) {
                 let movieDetails = document.getElementById('mainContent');
-                let mainTitle = document.getElementById('movieTitle');
                 let response = JSON.parse(xhr.responseText);
-
                 changeBackgroundByMovie(response);
                 window.scroll(0, 0);
-
                 movieDetails.innerHTML = ' ';
-                mainTitle.innerHTML = ' ';
-                let main = document.createElement('main');
-                main.className = "movie-details";
 
-                let movieDetailsSection = document.createElement('section');
-                createMovieDetailsContent(response, movieDetailsSection);
+                movieDetails.append(document.getElementById('movieDetailsTemplate').content.cloneNode(true))
 
-                let trailerSection = document.createElement('section');
-                createTrailerContent(response, trailerSection);
+                setMovieDetailsContent(response);
+                setSimilarMovies(response);
 
-                let similarMoviesSection = document.createElement('section');
-                createSimilarMoviesContent(response, similarMoviesSection);
-
-                main.append(movieDetailsSection, trailerSection, similarMoviesSection);
-                movieDetails.appendChild(main);
-
-                setSimilarMovies(response, similarMoviesSection);
-
-                let similarMovieItem = document.getElementsByClassName('similar-movie__item');
-                setMovieCardClickListener(response, similarMovieItem);
+                setMovieCardClickListener(response, document.getElementsByClassName('similar-movie__item'));
             }
         }
     )
 }
 
-function createMovieDetailsContent(response, sectionDetails) {
-    sectionDetails.className = "details";
-    let posterContainer = document.createElement('div');
-    posterContainer.className = "poster__img-container";
-    let posterImg = document.createElement('img');
-    posterImg.className = "poster__img";
-    posterImg.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + response.poster_path}`;
-    posterImg.alt = "Poster";
-    posterContainer.appendChild(posterImg);
-    let detailsContent = document.createElement('div');
-    detailsContent.className = "details__content";
-    let movieTitle = document.createElement('h1');
-    movieTitle.className = "movie__title";
-    movieTitle.textContent = `${response.title}` + ` (${new Date(response.release_date).getFullYear()})`;
-    let genresList = document.createElement('div');
-    genresList.className = "genres__list";
-    genresList.innerHTML = `${response.genres.map(genre => genre.name).join(', ')}`;
-    let overviewContainer = document.createElement('div');
-    overviewContainer.className = "overview-container";
-    let overviewText = document.createElement('p');
-    overviewText.className = "overview__text";
-    overviewText.textContent = `${response.overview}`;
-    overviewContainer.appendChild(overviewText);
-    let additionalDetails = document.createElement('div');
-    additionalDetails.className = "additional-details";
-    let runtimeContainer = document.createElement('div');
-    runtimeContainer.className = "running-time";
-    runtimeContainer.innerHTML = '<br>Running Time:<br>';
-    let runtimeData = document.createElement('span');
-    runtimeData.className = "meta-data";
-    runtimeData.innerHTML = `${response.runtime + ' mins'}`;
-    runtimeContainer.appendChild(runtimeData);
-    let voteAverageContainer = document.createElement('div');
-    voteAverageContainer.className = "vote-average";
-    voteAverageContainer.innerHTML = '<br>Vote Average:<br>';
-    let voteAverageData = document.createElement('span');
-    voteAverageData.className = "meta-data";
-    voteAverageData.innerHTML = `${response.vote_average + ' / 10'}`;
-    voteAverageContainer.appendChild(voteAverageData);
-    let budgetContainer = document.createElement('div');
-    budgetContainer.className = "budget";
-    budgetContainer.innerHTML = '<br>Box office:<br>';
-    let budgetData = document.createElement('span');
-    budgetData.className = "meta-data";
-    budgetContainer.appendChild(budgetData);
-    additionalDetails.append(runtimeContainer, voteAverageContainer, budgetContainer);
-    detailsContent.append(movieTitle, genresList, overviewContainer, additionalDetails);
-    sectionDetails.append(posterContainer, detailsContent);
+function setMovieDetailsContent(response) {
+    document.getElementById('posterByDetails').src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + response.poster_path}`;
+    document.getElementById('movieTitleByDetails').textContent = `${response.title}` + ` (${new Date(response.release_date).getFullYear()})`;
+    document.getElementById('genresList').innerHTML = `${response.genres.map(genre => genre.name).join(', ')}`;
+    document.getElementById('overview').textContent = `${response.overview}`;
+    document.getElementById('runningTime').innerHTML = `${response.runtime + ' mins'}`;
+    document.getElementById('voteAverage').innerHTML = `${response.vote_average + ' / 10'}`;
 
     if (response.budget.toLocaleString() !== '0') {
-        budgetData.innerHTML = '$' + response.budget.toLocaleString();
+        document.getElementById('budget').innerHTML = '$' + response.budget.toLocaleString();
     } else {
-        budgetContainer.innerHTML = ' ';
-        detailsContent.style.gridTemplateAreas = '" v v " "  k j "';
+        document.getElementById('budget').innerHTML = ' ';
+        document.getElementById('detailsContent').style.gridTemplateAreas = '" v v " "  k j "';
+    }
+
+    console.log(response.videos.results)
+    if (response.videos.results.length === 0) {
+        document.getElementById('trailerContent').innerHTML = ' '
+    } else {
+        document.getElementById('trailer').src = `${URL_YOUTUBE + response.videos.results[0].key}`;
     }
 }
 
-function createTrailerContent(response, trailerContent) {
-    trailerContent.className = "trailer__content";
-    let trailer = document.createElement('iframe');
-    trailer.className = "trailer";
-    trailer.src = `${URL_YOUTUBE + response.videos.results[0].key}`;
-    trailer.width = '800px';
-    trailer.height = '450px';
-    trailerContent.append(trailer);
-}
-
-function createSimilarMoviesContent(response, similarMovies) {
-    similarMovies.className = "similar-movies";
-    similarMovies.id = 'similarMovies';
-    let similarMoviesContent = document.createElement('div');
-    similarMoviesContent.className = "similar-movies__content";
-    similarMoviesContent.id = "similarMoviesContent";
-    let similarMovieList = document.createElement('div');
-    similarMovieList.className = "similar-movie__list";
-    similarMovieList.id = "similarMovieList";
-    let buttonPrev = document.createElement('button');
-    buttonPrev.className = 'glider-prev';
-    buttonPrev.textContent = '<';
-    let buttonNext = document.createElement('button');
-    buttonNext.className = 'glider-next';
-    buttonNext.textContent = '>';
-    let sliderDots = document.createElement('div');
-    sliderDots.className = 'dots';
-    similarMoviesContent.append(similarMovieList, buttonPrev, buttonNext, sliderDots);
-    similarMovies.appendChild(similarMoviesContent);
-}
-
-function setSimilarMovies(response, similarMovies) {
+function setSimilarMovies(response) {
+    let similarMovies = document.getElementById('similarMovies');
     if (response.similar.results[0] === undefined) {
         similarMovies.innerHTML = ' ';
     } else {

@@ -59,7 +59,7 @@ function createMovieCardContent(response, movieListContent) {
         item.id = "movieItem";
         let poster = document.createElement('img');
         poster.className = "movie__item__img";
-        poster.id = "moviePoster"
+        poster.id = "moviePoster";
         poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + movie.poster_path}`;
         poster.alt = "Movie poster";
         let title = document.createElement('h3');
@@ -98,7 +98,6 @@ export function getData(xhr, url) {
 function setHeaderLogoOnClickListener() {
     let headerLogo = document.getElementById('headerLogo');
     headerLogo.addEventListener('click', function () {
-        window.location.reload();
     })
 }
 
