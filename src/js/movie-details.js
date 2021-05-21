@@ -36,7 +36,7 @@ function setMovieDetailsOnLoadEventListener(xhr) {
                 window.scroll(0, 0);
                 movieDetails.innerHTML = ' ';
 
-                movieDetails.append(document.getElementById('movieDetailsTemplate').content.cloneNode(true))
+                movieDetails.append(document.getElementById('movieDetailsTemplate').content.cloneNode(true));
 
                 setMovieDetailsContent(response);
                 setSimilarMovies(response);
@@ -49,11 +49,12 @@ function setMovieDetailsOnLoadEventListener(xhr) {
 
 function setMovieDetailsContent(response) {
     document.getElementById('posterByDetails').src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + response.poster_path}`;
-    document.getElementById('movieTitleByDetails').textContent = `${response.title}` + ` (${new Date(response.release_date).getFullYear()})`;
+    document.getElementById('movieTitleByDetails').textContent = `${response.title}`;
     document.getElementById('genresList').innerHTML = `${response.genres.map(genre => genre.name).join(', ')}`;
     document.getElementById('overview').textContent = `${response.overview}`;
-    document.getElementById('runningTime').innerHTML = `${response.runtime + ' mins'}`;
-    document.getElementById('voteAverage').innerHTML = `${response.vote_average + ' / 10'}`;
+    document.getElementById('runningTime').innerHTML = `${response.runtime + ' min'}`;
+    document.getElementById('voteAverage').innerHTML = `${response.vote_average}`;
+    document.getElementById('releaseDate').textContent = `${new Date(response.release_date).getFullYear()}`;
 
     if (response.budget.toLocaleString() !== '0') {
         document.getElementById('budget').innerHTML = '$' + response.budget.toLocaleString();
@@ -64,16 +65,18 @@ function setMovieDetailsContent(response) {
 
     console.log(response.videos.results)
     if (response.videos.results.length === 0) {
-        document.getElementById('trailerContent').innerHTML = ' '
+        document.getElementById('trailerContent').innerHTML = ' ';
     } else {
         document.getElementById('trailer').src = `${URL_YOUTUBE + response.videos.results[0].key}`;
+        document.getElementById('secondTrailer').src = `${URL_YOUTUBE + response.videos.results[1].key}`;
+        document.getElementById('thirdTrailer').src = `${URL_YOUTUBE + response.videos.results[2].key}`;
     }
 }
 
 function setSimilarMovies(response) {
     let similarMovies = document.getElementById('similarMovies');
-    if (response.similar.results[0] === undefined) {
-        similarMovies.innerHTML = ' ';
+    if (response.similar.total_results === 0) {
+        similarMovies.remove();
     } else {
         let similarMovieList = document.getElementById('similarMovieList');
         response.similar.results.forEach(function (movie) {
@@ -97,7 +100,7 @@ function setSimilarMovies(response) {
 
 function initSlider() {
     new Glider(document.querySelector('.similar-movie__list'), {
-        slidesToShow: 8,
+        slidesToShow: 6,
         slidesToScroll: 3,
         draggable: true,
         dots: '.dots',

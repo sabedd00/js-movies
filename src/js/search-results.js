@@ -42,7 +42,7 @@ export function loadSearchResults(evt) {
                 footer.style.width = '100%'
             } else {
                 movieTitle.textContent = `Found ${response.total_results} movies`;
-                movieTitle.style.textAlign = 'left';
+                movieTitle.style.textAlign = 'center';
                 footer.style.position = 'relative';
                 initPagination(pageValue);
             }

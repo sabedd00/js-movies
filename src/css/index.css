@@ -4,67 +4,62 @@ body {
 }
 
 .header__content {
-    display: grid;
-    margin: auto;
-    grid-template-areas:
-    " a b ";
-    grid-template-columns: 80% 20%;
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+    display: flex;
+    justify-content: space-between;
+    background-color: #0c0707;
 }
 
 .header-logo__img {
-    grid-area: a;
     width: 150px;
     margin: 10px;
     cursor: pointer;
 }
 
 .search {
-    grid-area: b;
-    position: relative;
     margin-top: 20px;
 }
 
 .search__form {
-    content: "";
-    clear: both;
-    display: table;
+    display: flex;
+    background: #F9F9F9;
+    border-radius: 4em;
 }
 
 .search__input {
-    padding: 10px;
-    font-size: 17px;
-    border: 0;
-    outline: none;
-    text-align: left;
-    color: white;
-    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-}
-
-.search__input::-webkit-search-cancel-button {
-    display: none;
+    width: 0;
+    font-size: 1em;
+    color: #0F0D08;
+    transition: .5s;
 }
 
 .search__button {
-    width: 40px;
-    height: 40px;
-    font-size: 17px;
-    text-align: center;
-    border: none;
+    display: flex;
     border-radius: 50%;
-    outline: none;
-    padding: 10px;
-    background: linear-gradient(0.15turn, #90cea1, #01b4e4, #0d253f);
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 0 8px gray;
+    width: 4em;
+    height: 4em;
+    background-color: #F9F9F9;
+    transition: .3s;
 }
 
-.search__button:hover {
-    background: linear-gradient(0.15turn, #0d253f, #01b4e4, #90cea1);
+.fa-search {
+    margin: auto;
+    width: 100px;
+    color: black;
+}
+
+.search__input::placeholder {
+    color: #F9F9F9;
+    opacity: .7;
+}
+
+.search__form:hover .search__input {
+    padding-left: 2em;
+    padding-right: 1em;
+    width: 340px;
+}
+
+.search__button:active {
+    transform: scale(.75);
 }
 
 .main__content {
@@ -73,18 +68,23 @@ body {
 }
 
 .movie-list__content {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    grid-gap: 1.3%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
     padding-bottom: 2%;
 }
 
+.movie__item {
+    position: relative;
+}
+
 .movie__title {
-    margin: 1.5% 0 3% 0;
-    color: #ffffff;
-    font-family: 'Roboto', serif;
+    font-family: Roboto, serif;
     font-weight: 500;
-    font-size: 2.5em;
+    font-size: 2.9em;
+    color: #F9F9F9;
+    text-align: center;
 }
 
 .movie__item__img:hover {
@@ -92,17 +92,47 @@ body {
     filter: brightness(40%);
     transform: scale(0.98);
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+    opacity: 0.3;
+}
+
+.overlay {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.movie__item:hover .overlay {
+    opacity: 1;
+}
+
+.overlay__text {
+    padding: 16px 32px;
+    font-family: Roboto, serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: #F9F9F9;
 }
 
 .movie__item__img {
-    max-width: 300px;
-    transition: .5s;
+    height: 500px;
+    max-width: 350px;
+    opacity: 1;
+    display: block;
+    width: 100%;
+    transition: .5s ease;
+    backface-visibility: hidden;
 }
 
 .movie__item__title {
+    max-width: 300px;
     font-family: 'Roboto', serif;
     font-weight: 500;
-    color: #ffffff;
+    color: #F9F9F9;
     margin-top: .2em;
     padding-top: 0;
 }
@@ -116,19 +146,21 @@ body {
     background-color: transparent;
     background-repeat: no-repeat;
     border: none;
-    color: white;
+    color: #F9F9F9;
     cursor: pointer;
     outline: none;
 }
 
 .footer {
+    margin-top: auto;
     text-align: center;
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+    background-color: #0c0707;
 }
 
 .footer__text {
-    padding: 1%;
-    color: white;
+    padding: 20px;
+    font-family: Roboto, serif;
     font-size: 1.2em;
     margin-bottom: 0;
+    color: #F9F9F9;
 }

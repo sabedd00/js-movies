@@ -21,7 +21,7 @@ function loadPopularMovies() {
 
     xhr.onreadystatechange = function () {
         if (xhr.status === 200 && xhr.readyState === 4) {
-            document.body.style.background = '#1a143b';
+            document.body.style.background = '#010105';
             let response = JSON.parse(xhr.responseText);
 
             createMovieListContent(response);
@@ -65,7 +65,13 @@ function createMovieCardContent(response, movieListContent) {
         let title = document.createElement('h3');
         title.className = "movie__item__title";
         title.textContent = `${movie.title + ` (${new Date(movie.release_date).getFullYear()})`}`;
-        item.append(poster, title);
+        let overlay = document.createElement('div');
+        overlay.className = 'overlay'
+        let textOverlay = document.createElement('div');
+        textOverlay.textContent = `${movie.title} \n${movie.vote_average}\n${new Date(movie.release_date).toDateString()}`
+        textOverlay.className = 'overlay__text'
+        overlay.append(textOverlay);
+        item.append(poster, title, overlay);
         movieListContent.append(item);
     });
 }
