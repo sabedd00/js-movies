@@ -17,6 +17,7 @@ import {
 setSearchFormEventListeners();
 
 export function loadSearchResults(evt) {
+
     let xhr = new XMLHttpRequest();
     let pageValue = 1;
     let input = document.getElementById("searchInput");
@@ -49,6 +50,12 @@ export function loadSearchResults(evt) {
 
             let movieItem = document.getElementsByClassName('movie__item');
             setMovieCardClickListener(response, movieItem);
+
+            const state = { 'page_id': 3 }
+            const title = ''
+            const url = 'search-results'
+
+            history.pushState(state, title, url)
         }
     }
 

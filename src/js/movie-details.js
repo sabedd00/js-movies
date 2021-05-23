@@ -68,8 +68,6 @@ function setMovieDetailsContent(response) {
         document.getElementById('trailerContent').innerHTML = ' ';
     } else {
         document.getElementById('trailer').src = `${URL_YOUTUBE + response.videos.results[0].key}`;
-        document.getElementById('secondTrailer').src = `${URL_YOUTUBE + response.videos.results[1].key}`;
-        document.getElementById('thirdTrailer').src = `${URL_YOUTUBE + response.videos.results[2].key}`;
     }
 }
 
