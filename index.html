@@ -45,18 +45,19 @@
           <h1 class="movie-details__title" id="movieTitleByDetails"></h1>
 
           <div class="additional-details">
-            <div class="rating" id="rating">
-              <h4 class="rating__title">IMBD Rating:</h4>
-              <i class="fa fa-star"></i>
-              <h4 class="vote-average" id="voteAverage"></h4>
-            </div>
             <h4 class="release-date" id="releaseDate"></h4>
             <h4 class="running-time" id="runningTime"></h4>
+            <h4 class="budget" id="budget"></h4>
           </div>
 
           <div class="media__content">
             <div class="poster__img-container">
               <img class="poster__img" id="posterByDetails" alt="Poster">
+            </div>
+            <div class="rating" id="rating">
+              <h4 class="rating__title">IMDB Rating:</h4>
+              <i class="fa fa-star"></i>
+              <h4 class="vote-average" id="voteAverage"></h4>
             </div>
             <div class="trailer__content" id="trailerContent">
               <iframe class="trailer" id="trailer"></iframe>
@@ -67,9 +68,6 @@
             <div class="genres__list" id="genresList"></div>
             <div class="overview-container">
               <p class="overview__text" id="overview"></p>
-              <div class="budget" id="budget">
-                <br>Box office:<br><span class="meta-data"></span>
-              </div>
             </div>
           </div>
         </section>
@@ -84,6 +82,14 @@
           </div>
         </section>
       </main>
+    </template>
+
+    <template id="paginationTemplate">
+      <div class="pagination" id="pagination">
+        <button class="prev-page__button" id="prevPageButton"><</button>
+        <button class="page" id="page"></button>
+        <button class="next-page__button" id="nextPageButton">></button>
+      </div>
     </template>
 
     <script src="index.bundle.js"></script>

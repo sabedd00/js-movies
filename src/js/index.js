@@ -7,7 +7,7 @@ import {
     API_KEY, BASE_IMAGE_URL,
     BASE_URL, BIG_IMAGE_SIZE,
     ENG_LANGUAGE,
-    LANGUAGE_QUERY, MOVIES_SEARCH_QUERY,
+    LANGUAGE_QUERY,
     QUERY_PAGE,
     QUERY_POPULAR_MOVIES,
 } from "./config";
@@ -17,17 +17,20 @@ loadPopularMovies();
 
 function loadPopularMovies() {
     let xhr = new XMLHttpRequest();
-    let url = BASE_URL + QUERY_POPULAR_MOVIES + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + '1';
+    let pageValue = 1;
+    let url = BASE_URL + QUERY_POPULAR_MOVIES + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue;
 
     xhr.onreadystatechange = function () {
         if (xhr.status === 200 && xhr.readyState === 4) {
-            document.body.style.background = '#010105';
+            document.body.style.background = '#191919';
             let response = JSON.parse(xhr.responseText);
 
             createMovieListContent(response);
 
             let movieItem = document.getElementsByClassName('movie__item');
             setMovieCardClickListener(response, movieItem);
+
+            initPagination(pageValue)
         }
     }
 
@@ -64,13 +67,19 @@ function createMovieCardContent(response, movieListContent) {
         poster.alt = "Movie poster";
         let title = document.createElement('h3');
         title.className = "movie__item__title";
-        title.textContent = `${movie.title + ` (${new Date(movie.release_date).getFullYear()})`}`;
+        title.textContent = `${movie.title}`;
         let overlay = document.createElement('div');
-        overlay.className = 'overlay'
-        let textOverlay = document.createElement('div');
-        textOverlay.textContent = `${movie.title} \n${movie.vote_average}\n${new Date(movie.release_date).toDateString()}`
-        textOverlay.className = 'overlay__text'
-        overlay.append(textOverlay);
+        overlay.className = 'overlay';
+        let overlayRating = document.createElement('div');
+        overlayRating.textContent = `${movie.vote_average}`;
+        overlayRating.className = 'overlay__rating';
+        let overlayReleaseYear = document.createElement('div');
+        overlayReleaseYear.textContent = `${new Date(movie.release_date).getFullYear()}`
+        overlayReleaseYear.className = "overlay__release-year";
+        let overlayOverview = document.createElement('div');
+        overlayOverview.textContent = `${movie.overview}`;
+        overlayOverview.className = "overlay__overview";
+        overlay.append(overlayRating, overlayReleaseYear, overlayOverview);
         item.append(poster, title, overlay);
         movieListContent.append(item);
     });
@@ -107,53 +116,57 @@ function setHeaderLogoOnClickListener() {
     })
 }
 
-export function initPagination(pageValue) {
+function initPagination(pageValue) {
     let mainContent = document.getElementById('mainContent');
-    let pagination = document.createElement('div');
-    pagination.className = "pagination";
-    let prevPageButton = document.createElement('button');
-    prevPageButton.className = "prev-page__button";
-    prevPageButton.textContent = "← Prev page";
-    let nextPageButton = document.createElement('button');
-    nextPageButton.className = "next-page__button";
-    nextPageButton.textContent = "Next page →";
-    pagination.append(prevPageButton, nextPageButton);
-    mainContent.append(pagination);
+    mainContent.append(document.getElementById('paginationTemplate').content.cloneNode(true));
 
-    setBtnChangePageListener(pageValue, prevPageButton, nextPageButton);
+    setBtnChangePageListener(pageValue, BASE_URL + QUERY_POPULAR_MOVIES + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue);
 }
 
-export function setBtnChangePageListener(pageValue, prevPageButton, nextPageButton) {
-    let input = document.getElementById("searchInput");
-    let inputValue = input.value;
-
-    nextPageButton.addEventListener('click', function () {
+function setBtnChangePageListener(pageValue, url) {
+    document.getElementById('prevPageButton').addEventListener('click', function () {
         let xhr = new XMLHttpRequest();
-        pageValue++;
-        let url = BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${inputValue}`;
+        pageValue--;
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 let response = JSON.parse(xhr.responseText);
 
                 setMovieList(xhr, response);
+                initPagination(pageValue);
             }
         }
         getData(xhr, url);
     });
 
-    prevPageButton.addEventListener('click', function () {
+    document.getElementById('nextPageButton').addEventListener('click', function () {
         let xhr = new XMLHttpRequest();
-        pageValue--;
-        let url = BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${inputValue}`;
+        pageValue++;
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 let response = JSON.parse(xhr.responseText);
 
                 setMovieList(xhr, response);
+                initPagination(pageValue);
             }
         }
         getData(xhr, url);
-    })
+    });
+
+    document.getElementById('page').addEventListener('click', function () {
+        let xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let response = JSON.parse(xhr.responseText);
+
+                document.getElementById('page').innerHTML = pageValue;
+
+                setMovieList(xhr, response);
+                initPagination(pageValue);
+            }
+        }
+        getData(xhr, url);
+    });
 }

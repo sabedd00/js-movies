@@ -10,7 +10,6 @@ import {
 } from "./config";
 import {
     setMovieCardClickListener,
-    initPagination,
     getData, createMovieListContent
 } from "./index";
 
@@ -45,17 +44,10 @@ export function loadSearchResults(evt) {
                 movieTitle.textContent = `Found ${response.total_results} movies`;
                 movieTitle.style.textAlign = 'center';
                 footer.style.position = 'relative';
-                initPagination(pageValue);
             }
 
             let movieItem = document.getElementsByClassName('movie__item');
             setMovieCardClickListener(response, movieItem);
-
-            const state = { 'page_id': 3 }
-            const title = ''
-            const url = 'search-results'
-
-            history.pushState(state, title, url)
         }
     }
 

@@ -4,55 +4,68 @@ body {
 
 .main {
     margin-top: 2%;
+    margin-bottom: 2%;
 }
 
 .details {
     margin: auto;
-    width: 88%;
+    width: 70%;
     font-family: Roboto, serif;
     border-radius: 15px;
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
-    padding: 1%;
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8));
     color: #F9F9F9;
+    padding: 20px;
 }
 
 .movie-details__title {
-    font-size: 2em;
+    font-size: 3em;
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 }
 
 .additional-details {
     display: flex;
+    margin: 0 0 10px 0;
     font-weight: 400;
     font-size: 1em;
     color: #F9F9F9;
     gap: 10px;
+    white-space: pre;
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+
+.running-time,
+.budget,
+.release-date {
+    margin-bottom: 0;
 }
 
 .rating {
+    position: absolute;
+    padding: 10px;
     display: grid;
-    font-size: 1.9em;
+    border-bottom-right-radius: 30px;
+    font-size: 1.6em;
     grid-template-areas:
             " a a "
             " b c ";
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8));
 }
 
 .rating__title {
     display: grid;
     grid-area: a;
-    font-size: 0.4em;
+    font-size: 0.5em;
 }
 
 .fa-star {
     grid-area: b;
     margin-top: 10px;
-    font-size: 0.7em;
+    font-size: 0.6em;
     color: #ffe101;
 }
 
 .movie-details__title,
 .rating__title,
-.release-date,
-.running-time,
 .vote-average {
     margin-top: 0;
     margin-bottom: 0;
@@ -61,16 +74,13 @@ body {
 .vote-average {
     display: grid;
     grid-area: c;
-    margin-left: auto;
 }
 
 .media__content {
     display: flex;
-    padding: 1%;
-    border-radius: 15px;
+    height: 500px;
     justify-content: space-between;
-    gap: 20px;
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+    gap: 10px;
 }
 
 .poster__img {
@@ -99,13 +109,29 @@ body {
     border: none;
 }
 
+.details__content {
+    margin: 10px 0 10px 0;
+}
+
+.genres__list {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffe101;
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+
+.overview__text {
+    font-size: 1em;
+    font-weight: 500;
+}
+
 .similar-movies {
-    width: 90%;
+    width: 72%;
     margin-right: auto;
     margin-left: auto;
     margin-top: 1%;
     border-radius: 15px;
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8));
     color: #ffffff;
     clear: both;
 }

@@ -54,10 +54,10 @@ function setMovieDetailsContent(response) {
     document.getElementById('overview').textContent = `${response.overview}`;
     document.getElementById('runningTime').innerHTML = `${response.runtime + ' min'}`;
     document.getElementById('voteAverage').innerHTML = `${response.vote_average}`;
-    document.getElementById('releaseDate').textContent = `${new Date(response.release_date).getFullYear()}`;
+    document.getElementById('releaseDate').textContent = `${new Date(response.release_date).getFullYear()}  •`;
 
     if (response.budget.toLocaleString() !== '0') {
-        document.getElementById('budget').innerHTML = '$' + response.budget.toLocaleString();
+        document.getElementById('budget').innerHTML = '•  $' + response.budget.toLocaleString();
     } else {
         document.getElementById('budget').innerHTML = ' ';
         document.getElementById('detailsContent').style.gridTemplateAreas = '" v v " "  k j "';
@@ -75,6 +75,7 @@ function setSimilarMovies(response) {
     let similarMovies = document.getElementById('similarMovies');
     if (response.similar.total_results === 0) {
         similarMovies.remove();
+        document.getElementById('mainContent').style.margin = '2.5% 0 2.5% 0';
     } else {
         let similarMovieList = document.getElementById('similarMovieList');
         response.similar.results.forEach(function (movie) {
@@ -87,7 +88,10 @@ function setSimilarMovies(response) {
             poster.alt = "Similar movie poster";
             let title = document.createElement('h3');
             title.className = "similar-movie__title";
-            title.textContent = `${movie.title}` + ` (${new Date(movie.release_date).getFullYear()})`;
+            if(!!isNaN(movie.release_date)) {
+                title.textContent = `${movie.title}` + ` (${new Date(movie.release_date).getFullYear()})`;
+            }
+
             item.append(poster, title);
             similarMovieList.appendChild(item);
         })
