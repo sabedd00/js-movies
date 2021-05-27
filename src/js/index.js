@@ -1,16 +1,17 @@
 'use strict';
 
 import Logo from '../images/tmdb-logo.svg';
-import {loadMovieDetails} from "./movie-details.js";
+import {loadMovieDetails, showPoster} from "./movie-details.js";
 import '../css/index.css';
 import {
-    API_KEY, BASE_IMAGE_URL,
+    API_KEY,
     BASE_URL, BIG_IMAGE_SIZE,
     ENG_LANGUAGE,
     LANGUAGE_QUERY,
     QUERY_PAGE,
     QUERY_POPULAR_MOVIES,
 } from "./config";
+import emptyPoster from "../images/empty-poster.png";
 
 setHeaderLogoOnClickListener();
 loadPopularMovies();
@@ -30,10 +31,9 @@ function loadPopularMovies() {
             let movieItem = document.getElementsByClassName('movie__item');
             setMovieCardClickListener(response, movieItem);
 
-            initPagination(pageValue)
+            initPagination(pageValue);
         }
     }
-
     getData(xhr, url);
 }
 
@@ -63,7 +63,7 @@ function createMovieCardContent(response, movieListContent) {
         let poster = document.createElement('img');
         poster.className = "movie__item__img";
         poster.id = "moviePoster";
-        poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + movie.poster_path}`;
+        showPoster(movie, poster, BIG_IMAGE_SIZE);
         poster.alt = "Movie poster";
         let title = document.createElement('h3');
         title.className = "movie__item__title";
@@ -119,54 +119,43 @@ function setHeaderLogoOnClickListener() {
 function initPagination(pageValue) {
     let mainContent = document.getElementById('mainContent');
     mainContent.append(document.getElementById('paginationTemplate').content.cloneNode(true));
+    document.getElementById('page').textContent = pageValue;
+    let url = BASE_URL + QUERY_POPULAR_MOVIES + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue;
 
-    setBtnChangePageListener(pageValue, BASE_URL + QUERY_POPULAR_MOVIES + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue);
+    setBtnChangePageListener(pageValue, url);
+
 }
 
 function setBtnChangePageListener(pageValue, url) {
     document.getElementById('prevPageButton').addEventListener('click', function () {
-        let xhr = new XMLHttpRequest();
-        pageValue--;
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                let response = JSON.parse(xhr.responseText);
-
-                setMovieList(xhr, response);
-                initPagination(pageValue);
-            }
+        if (pageValue > 1) {
+            pageValue--;
+            getPage(pageValue, url);
         }
-        getData(xhr, url);
     });
 
     document.getElementById('nextPageButton').addEventListener('click', function () {
-        let xhr = new XMLHttpRequest();
-        pageValue++;
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                let response = JSON.parse(xhr.responseText);
-
-                setMovieList(xhr, response);
-                initPagination(pageValue);
-            }
+        if (pageValue >= 1) {
+            pageValue++;
+            getPage(pageValue, url);
         }
-        getData(xhr, url);
     });
 
     document.getElementById('page').addEventListener('click', function () {
-        let xhr = new XMLHttpRequest();
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                let response = JSON.parse(xhr.responseText);
-
-                document.getElementById('page').innerHTML = pageValue;
-
-                setMovieList(xhr, response);
-                initPagination(pageValue);
-            }
-        }
-        getData(xhr, url);
+        getPage(pageValue, url);
     });
+}
+
+function getPage(pageValue, url) {
+    let xhr = new XMLHttpRequest();
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            let response = JSON.parse(xhr.responseText);
+
+            setMovieList(xhr, response);
+            initPagination(pageValue);
+        }
+    }
+    getData(xhr, url);
 }

@@ -2,6 +2,7 @@
 
 import {getData, setMovieCardClickListener} from './index.js';
 import logo from '../images/tmdb-logo.svg';
+import emptyPoster from '../images/empty-poster.png';
 import {
     API_KEY,
     BASE_IMAGE_URL,
@@ -35,6 +36,7 @@ function setMovieDetailsOnLoadEventListener(xhr) {
                 changeBackgroundByMovie(response);
                 window.scroll(0, 0);
                 movieDetails.innerHTML = ' ';
+                document.getElementById('searchInput').value = ''
 
                 movieDetails.append(document.getElementById('movieDetailsTemplate').content.cloneNode(true));
 
@@ -48,22 +50,58 @@ function setMovieDetailsOnLoadEventListener(xhr) {
 }
 
 function setMovieDetailsContent(response) {
-    document.getElementById('posterByDetails').src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + response.poster_path}`;
     document.getElementById('movieTitleByDetails').textContent = `${response.title}`;
+
+    showRating(response);
+    showAdditionalDetails(response);
+    showMediaContent(response);
+
     document.getElementById('genresList').innerHTML = `${response.genres.map(genre => genre.name).join(', ')}`;
     document.getElementById('overview').textContent = `${response.overview}`;
-    document.getElementById('runningTime').innerHTML = `${response.runtime + ' min'}`;
-    document.getElementById('voteAverage').innerHTML = `${response.vote_average}`;
-    document.getElementById('releaseDate').textContent = `${new Date(response.release_date).getFullYear()}  •`;
+}
 
-    if (response.budget.toLocaleString() !== '0') {
-        document.getElementById('budget').innerHTML = '•  $' + response.budget.toLocaleString();
+function showAdditionalDetails(response) {
+    if (response.release_date === '') {
+        document.getElementById('releaseDate').textContent = '';
+        document.getElementById('releaseDate').style.marginRight = '0';
+        document.getElementById('firstDot').innerHTML = '';
     } else {
-        document.getElementById('budget').innerHTML = ' ';
-        document.getElementById('detailsContent').style.gridTemplateAreas = '" v v " "  k j "';
+        document.getElementById('releaseDate').textContent = `${new Date(response.release_date).getFullYear()}`
     }
 
-    console.log(response.videos.results)
+    if (response.runtime == null || response.runtime === 0) {
+        document.getElementById('runningTime').innerHTML = '';
+        document.getElementById('runningTime').style.marginRight = '0';
+        document.getElementById('secondDot').innerHTML = '';
+        document.getElementById('firstDot').innerHTML = '';
+    } else {
+        document.getElementById('runningTime').innerHTML = `${response.runtime + ' min'}`;
+    }
+
+    if (response.budget.toLocaleString() !== '0') {
+        document.getElementById('budget').innerHTML = '$' + response.budget.toLocaleString();
+    } else {
+        document.getElementById('budget').innerHTML = ' ';
+        document.getElementById('secondDot').innerHTML = '';
+    }
+}
+
+function showRating(response) {
+    if (response.vote_average === 0) {
+        document.getElementById('rating').innerHTML = ''
+        document.getElementById('rating').style.background = '0';
+    } else {
+        document.getElementById('voteAverage').innerHTML = `${response.vote_average}`;
+    }
+}
+
+function showMediaContent(response) {
+    let poster = document.getElementById('posterByDetails');
+    poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + response.poster_path}`;
+    if (poster.src === 'https://image.tmdb.org/t/p/w342null') {
+        poster.src = emptyPoster;
+    }
+
     if (response.videos.results.length === 0) {
         document.getElementById('trailerContent').innerHTML = ' ';
     } else {
@@ -84,12 +122,14 @@ function setSimilarMovies(response) {
             item.id = "similarMovie"
             let poster = document.createElement('img');
             poster.className = "similar-movie__img";
-            poster.src = `${BASE_IMAGE_URL + SMALL_IMAGE_SIZE + movie.poster_path}`;
+            showPoster(movie, poster, SMALL_IMAGE_SIZE);
             poster.alt = "Similar movie poster";
             let title = document.createElement('h3');
             title.className = "similar-movie__title";
             if(!!isNaN(movie.release_date)) {
                 title.textContent = `${movie.title}` + ` (${new Date(movie.release_date).getFullYear()})`;
+            } else {
+                title.textContent = `${movie.title}`
             }
 
             item.append(poster, title);
@@ -97,6 +137,14 @@ function setSimilarMovies(response) {
         })
 
         initSlider();
+    }
+}
+
+export function showPoster(movie, poster, size) {
+    if (movie.poster_path == null) {
+        poster.src = emptyPoster;
+    } else {
+        poster.src = `${BASE_IMAGE_URL + size + movie.poster_path}`;
     }
 }
 

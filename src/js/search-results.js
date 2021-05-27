@@ -26,9 +26,8 @@ export function loadSearchResults(evt) {
     xhr.onload = function () {
         if (xhr.status === 200 && xhr.readyState === 4) {
             let mainContent = document.getElementById('mainContent');
-            let footer = document.getElementById('footer');
             let response = JSON.parse(xhr.responseText);
-
+            document.body.style.background = '#191919';
             mainContent.innerHTML = ' ';
 
             createMovieListContent(response);
@@ -37,13 +36,9 @@ export function loadSearchResults(evt) {
             if (response.total_results === 0) {
                 movieTitle.textContent = `Movie not found`;
                 movieTitle.style.textAlign = 'center';
-                footer.style.position = 'absolute';
-                footer.style.bottom = '0';
-                footer.style.width = '100%'
             } else {
                 movieTitle.textContent = `Found ${response.total_results} movies`;
                 movieTitle.style.textAlign = 'center';
-                footer.style.position = 'relative';
             }
 
             let movieItem = document.getElementsByClassName('movie__item');
@@ -57,6 +52,7 @@ export function loadSearchResults(evt) {
 
 export function setSearchFormEventListeners() {
     let input = document.getElementById('searchInput');
+    let searchButton = document.getElementById('searchButton');
 
     input.addEventListener("keypress", function (event) {
             if (event.key === 'Enter') {
@@ -69,4 +65,9 @@ export function setSearchFormEventListeners() {
     input.addEventListener('keypress', function () {
         input.style.borderBottom = 'solid #eeeeee 1px';
     });
+
+    searchButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        loadSearchResults();
+    })
 }
