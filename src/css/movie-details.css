@@ -145,6 +145,12 @@ body {
     padding: 2%;
 }
 
+.similar-movies__title {
+    margin-top: 0;
+    font-size: 1.5em;
+    border-bottom: solid 1px #fdfdfd;
+}
+
 .similar-movie__list {
     text-align: center;
 }

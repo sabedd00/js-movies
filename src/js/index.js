@@ -60,29 +60,51 @@ function createMovieCardContent(response, movieListContent) {
         let item = document.createElement('div');
         item.className = "movie__item";
         item.id = "movieItem";
+        let posterContent = document.createElement('div');
+        posterContent.className = 'movie__item__img__content';
+        let overlay = document.createElement('div');
+        overlay.className = 'overlay';
+        let overlayRating = document.createElement('div');
+        overlayRating.className = 'overlay__rating';
+        overlayRating.textContent = `${movie.vote_average}`;
+        let overlayReleaseYear = document.createElement('div');
+        overlayReleaseYear.className = "overlay__release-year";
+        let overlayOverview = document.createElement('div');
+        overlayOverview.textContent = `${movie.overview}`;
+        overlayOverview.className = "overlay__overview";
+        showOverlayDetails(movie, overlay, overlayReleaseYear, overlayOverview, overlayRating)
         let poster = document.createElement('img');
         poster.className = "movie__item__img";
         poster.id = "moviePoster";
         showPoster(movie, poster, BIG_IMAGE_SIZE);
         poster.alt = "Movie poster";
+        posterContent.append(overlay, poster);
         let title = document.createElement('h3');
         title.className = "movie__item__title";
         title.textContent = `${movie.title}`;
-        let overlay = document.createElement('div');
-        overlay.className = 'overlay';
-        let overlayRating = document.createElement('div');
-        overlayRating.textContent = `${movie.vote_average}`;
-        overlayRating.className = 'overlay__rating';
-        let overlayReleaseYear = document.createElement('div');
-        overlayReleaseYear.textContent = `${new Date(movie.release_date).getFullYear()}`
-        overlayReleaseYear.className = "overlay__release-year";
-        let overlayOverview = document.createElement('div');
-        overlayOverview.textContent = `${movie.overview}`;
-        overlayOverview.className = "overlay__overview";
-        overlay.append(overlayRating, overlayReleaseYear, overlayOverview);
-        item.append(poster, title, overlay);
+        item.append(posterContent, title);
         movieListContent.append(item);
     });
+}
+
+function showOverlayDetails(movie, overlay, overlayReleaseYear, overlayOverview, overlayRating) {
+    if (!!isNaN(movie.release_date)) {
+        overlayReleaseYear.textContent = `${new Date(movie.release_date).getFullYear()}`
+    } else {
+        overlayReleaseYear.textContent = '';
+    }
+
+    if (movie.vote_average === 0) {
+        overlay.append(overlayReleaseYear, overlayOverview);
+    } else {
+        overlay.append(overlayRating, overlayReleaseYear, overlayOverview);
+    }
+
+    if (movie.vote_average !== 0 && !!isNaN(movie.release_date) || !!isNaN(movie.release_date) && movie.overview !== '') {
+        overlayReleaseYear.style.borderBottom = 'solid 1px #ffffff';
+    } else {
+        overlayReleaseYear.style.borderBottom = 'none'
+    }
 }
 
 function setMovieList(xhr, response) {
@@ -123,7 +145,6 @@ function initPagination(pageValue) {
     let url = BASE_URL + QUERY_POPULAR_MOVIES + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue;
 
     setBtnChangePageListener(pageValue, url);
-
 }
 
 function setBtnChangePageListener(pageValue, url) {
