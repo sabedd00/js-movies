@@ -32,7 +32,7 @@
     </div>
 
     <template id="movieDetailsTemplate">
-      <main class="movie-details">
+      <main class="movie-details" id="movieDetails">
         <section class="details">
           <h1 class="movie-details__title" id="movieTitleByDetails"></h1>
 
@@ -81,9 +81,15 @@
 
     <template id="paginationTemplate">
       <div class="pagination" id="pagination">
-        <button class="prev-page__button" id="prevPageButton"><</button>
-        <button class="page" id="page"></button>
-        <button class="next-page__button" id="nextPageButton">></button>
+        <button class="pagination__button prev-page__button" id="prevPageButton"><</button>
+        <button class="pagination__button first-page__button" id="firstPageButton">1</button>
+        <button class="pagination__button step-back" id="stepBackPageButton">...</button>
+        <button class="pagination__button back-page" id="backPageButton"></button>
+        <button class="pagination__button current-page__button active" id="currentPageButton"></button>
+        <button class="pagination__button forward-page" id="forwardPageButton"></button>
+        <button class="pagination__button step-forward" id="stepForwardPageButton">...</button>
+        <button class="pagination__button last-page__button" id="lastPageButton"></button>
+        <button class="pagination__button next-page__button" id="nextPageButton">></button>
       </div>
     </template>
 

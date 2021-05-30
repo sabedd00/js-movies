@@ -13,12 +13,14 @@ import {
 } from "./config";
 import emptyPoster from "../images/empty-poster.png";
 
-setHeaderLogoOnClickListener();
-loadPopularMovies();
+let movieOpacity = 0;
+let pageValue = 1;
 
-function loadPopularMovies() {
+setHeaderLogoOnClickListener();
+loadPopularMovies(pageValue);
+
+function loadPopularMovies(pageValue) {
     let xhr = new XMLHttpRequest();
-    let pageValue = 1;
     let url = BASE_URL + QUERY_POPULAR_MOVIES + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue;
 
     xhr.onreadystatechange = function () {
@@ -26,12 +28,12 @@ function loadPopularMovies() {
             document.body.style.background = '#191919';
             let response = JSON.parse(xhr.responseText);
 
-            createMovieListContent(response);
+            setTimeout(function () {
+                setOpacityOnList(document.getElementById('movieList'));
+            }, 600);
 
-            let movieItem = document.getElementsByClassName('movie__item');
-            setMovieCardClickListener(response, movieItem);
-
-            initPagination(pageValue);
+            setMovieList(xhr, response);
+            initPagination(pageValue, response);
         }
     }
     getData(xhr, url);
@@ -138,45 +140,122 @@ function setHeaderLogoOnClickListener() {
     })
 }
 
-function initPagination(pageValue) {
+function initPagination(pageValue, response) {
     let mainContent = document.getElementById('mainContent');
     mainContent.append(document.getElementById('paginationTemplate').content.cloneNode(true));
-    document.getElementById('page').textContent = pageValue;
-    let url = BASE_URL + QUERY_POPULAR_MOVIES + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue;
 
-    setBtnChangePageListener(pageValue, url);
+    getPreviousPage(pageValue);
+    getFirstPage(response, pageValue);
+    getStepBack(pageValue);
+    getCurrentPage(pageValue);
+    getStepForward(response, pageValue);
+    getNextPage(pageValue);
+    getLastPage(response, pageValue);
+    getAdditionalPageButtons(pageValue, response);
 }
 
-function setBtnChangePageListener(pageValue, url) {
-    document.getElementById('prevPageButton').addEventListener('click', function () {
-        if (pageValue > 1) {
-            pageValue--;
-            getPage(pageValue, url);
-        }
-    });
+function getFirstPage(response, pageValue) {
+    if (pageValue > 1 && pageValue >= 3) {
+        document.getElementById('firstPageButton').style.visibility = 'visible';
+        document.getElementById('firstPageButton').addEventListener('click', function () {
+            loadPopularMovies(response.total_pages / response.total_pages);
+        });
+    } else {
+        document.getElementById('firstPageButton').remove();
+    }
+}
 
+function getNextPage(pageValue) {
     document.getElementById('nextPageButton').addEventListener('click', function () {
         if (pageValue >= 1) {
             pageValue++;
-            getPage(pageValue, url);
+            loadPopularMovies(pageValue);
         }
-    });
-
-    document.getElementById('page').addEventListener('click', function () {
-        getPage(pageValue, url);
     });
 }
 
-function getPage(pageValue, url) {
-    let xhr = new XMLHttpRequest();
+function getPreviousPage(pageValue) {
+    if (pageValue > 1) {
+        document.getElementById('prevPageButton').addEventListener('click', function () {
+            pageValue--;
+            loadPopularMovies(pageValue);
+        });
+    } else {
+        document.getElementById('prevPageButton').remove();
+    }
+}
 
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            let response = JSON.parse(xhr.responseText);
+function getCurrentPage(pageValue) {
+    document.getElementById('currentPageButton').textContent = pageValue;
+    document.getElementById('currentPageButton').addEventListener('click', function () {
+        loadPopularMovies(pageValue);
+    });
+}
 
-            setMovieList(xhr, response);
-            initPagination(pageValue);
+function getLastPage(response, pageValue) {
+    if (response.total_pages > 1) {
+        document.getElementById('lastPageButton').textContent = response.total_pages;
+        document.getElementById('lastPageButton').addEventListener('click', function () {
+            loadPopularMovies(response.total_pages);
+        });
+    }
+    if (pageValue === response.total_pages) {
+        document.getElementById('lastPageButton').remove();
+        document.getElementById('nextPageButton').style.visibility = 'hidden';
+    }
+    if (pageValue === response.total_pages - 1) {
+        document.getElementById('lastPageButton').remove();
+    }
+}
+
+function getStepBack(pageValue) {
+    if (pageValue < 4) {
+        document.getElementById('stepBackPageButton').remove();
+    } else {
+        document.getElementById('stepBackPageButton').addEventListener('click', function () {
+            loadPopularMovies(pageValue - 3);
+        });
+    }
+}
+
+function getStepForward(response, pageValue) {
+    if (pageValue + 3 > response.total_pages) {
+        document.getElementById('stepForwardPageButton').remove();
+    } else {
+        document.getElementById('stepForwardPageButton').addEventListener('click', function () {
+            loadPopularMovies(pageValue + 3);
+        });
+    }
+}
+
+function getAdditionalPageButtons(pageValue, response) {
+    if (document.getElementById('stepForwardPageButton') && document.getElementById('stepBackPageButton') === true) {
+        document.getElementById('backPageButton').remove();
+        document.getElementById('forwardPageButton').remove();
+    } else {
+        document.getElementById('backPageButton').textContent = `${pageValue - 1}`;
+        document.getElementById('backPageButton').addEventListener('click', function () {
+            loadPopularMovies(pageValue - 1);
+        });
+        document.getElementById('forwardPageButton').textContent = `${pageValue + 1}`;
+        document.getElementById('forwardPageButton').addEventListener('click', function () {
+            loadPopularMovies(pageValue + 1);
+        });
+        if (pageValue === 1) {
+            document.getElementById('backPageButton').remove();
+        }
+        if (response.total_pages === pageValue) {
+            document.getElementById('forwardPageButton').remove();
         }
     }
-    getData(xhr, url);
+}
+
+function setOpacityOnList(list) {
+    if (movieOpacity < 1) {
+        movieOpacity += .030;
+        setTimeout(function () {
+            setOpacityOnList(list);
+        }, 50);
+    }
+    list.style.opacity = `${movieOpacity}`;
 }
