@@ -10,17 +10,15 @@ import {
 } from "./config";
 import {
     setMovieCardClickListener,
-    getData, createMovieListContent
+    getData, createMovieListContent, initPagination
 } from "./index";
 
 setSearchFormEventListeners();
+let evt;
 
-export function loadSearchResults(evt) {
-
+export function loadSearchResults(pageValue) {
     let xhr = new XMLHttpRequest();
-    let pageValue = 1;
     let input = document.getElementById("searchInput");
-
     let url = BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${input.value}`;
 
     xhr.onload = function () {
@@ -31,23 +29,34 @@ export function loadSearchResults(evt) {
             mainContent.innerHTML = ' ';
 
             createMovieListContent(response);
-
-            let movieTitle = document.getElementById('movieTitle');
-            if (response.total_results === 0) {
-                movieTitle.textContent = `Movie not found`;
-                movieTitle.style.textAlign = 'center';
-            } else {
-                movieTitle.textContent = `Found ${response.total_results} movies`;
-                movieTitle.style.textAlign = 'center';
-            }
+            setNoSearchResultsAreAvailable(response);
 
             let movieItem = document.getElementsByClassName('movie__item');
             setMovieCardClickListener(response, movieItem);
+
+            if (pageValue === undefined) {
+                pageValue = 1;
+                initPagination(pageValue, response);
+            } else {
+                initPagination(pageValue, response);
+            }
         }
     }
 
     getData(xhr, url);
     evt.preventDefault();
+}
+
+function setNoSearchResultsAreAvailable(response) {
+    let movieTitle = document.getElementById('movieTitle');
+    if (response.total_results === 0) {
+        movieTitle.textContent = `Movie not found`;
+        movieTitle.style.textAlign = 'center';
+        document.getElementById('pagination').remove();
+    } else {
+        movieTitle.textContent = `Found ${response.total_results} movies`;
+        movieTitle.style.textAlign = 'center';
+    }
 }
 
 export function setSearchFormEventListeners() {

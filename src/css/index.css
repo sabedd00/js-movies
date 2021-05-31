@@ -70,7 +70,6 @@ body {
     justify-content: center;
     gap: 20px;
     padding-bottom: 2%;
-    opacity: 0;
 }
 
 .movie__title {

@@ -12,8 +12,8 @@ import {
     QUERY_POPULAR_MOVIES,
 } from "./config";
 import emptyPoster from "../images/empty-poster.png";
+import {loadSearchResults} from "./search-results";
 
-let movieOpacity = 0;
 let pageValue = 1;
 
 setHeaderLogoOnClickListener();
@@ -27,10 +27,6 @@ function loadPopularMovies(pageValue) {
         if (xhr.status === 200 && xhr.readyState === 4) {
             document.body.style.background = '#191919';
             let response = JSON.parse(xhr.responseText);
-
-            setTimeout(function () {
-                setOpacityOnList(document.getElementById('movieList'));
-            }, 600);
 
             setMovieList(xhr, response);
             initPagination(pageValue, response);
@@ -140,7 +136,7 @@ function setHeaderLogoOnClickListener() {
     })
 }
 
-function initPagination(pageValue, response) {
+export function initPagination(pageValue, response) {
     let mainContent = document.getElementById('mainContent');
     mainContent.append(document.getElementById('paginationTemplate').content.cloneNode(true));
 
@@ -158,7 +154,11 @@ function getFirstPage(response, pageValue) {
     if (pageValue > 1 && pageValue >= 3) {
         document.getElementById('firstPageButton').style.visibility = 'visible';
         document.getElementById('firstPageButton').addEventListener('click', function () {
-            loadPopularMovies(response.total_pages / response.total_pages);
+            if (document.getElementById("searchInput").value === '') {
+                loadPopularMovies(response.total_pages / response.total_pages);
+            } else {
+                loadSearchResults(response.total_pages / response.total_pages);
+            }
         });
     } else {
         document.getElementById('firstPageButton').remove();
@@ -169,7 +169,11 @@ function getNextPage(pageValue) {
     document.getElementById('nextPageButton').addEventListener('click', function () {
         if (pageValue >= 1) {
             pageValue++;
-            loadPopularMovies(pageValue);
+            if (document.getElementById("searchInput").value === '') {
+                loadPopularMovies(pageValue);
+            } else {
+                loadSearchResults(pageValue);
+            }
         }
     });
 }
@@ -178,7 +182,11 @@ function getPreviousPage(pageValue) {
     if (pageValue > 1) {
         document.getElementById('prevPageButton').addEventListener('click', function () {
             pageValue--;
-            loadPopularMovies(pageValue);
+            if (document.getElementById("searchInput").value === '') {
+                loadPopularMovies(pageValue);
+            } else {
+                loadSearchResults(pageValue);
+            }
         });
     } else {
         document.getElementById('prevPageButton').remove();
@@ -188,7 +196,11 @@ function getPreviousPage(pageValue) {
 function getCurrentPage(pageValue) {
     document.getElementById('currentPageButton').textContent = pageValue;
     document.getElementById('currentPageButton').addEventListener('click', function () {
-        loadPopularMovies(pageValue);
+        if (document.getElementById("searchInput").value === '') {
+            loadPopularMovies(pageValue);
+        } else {
+            loadSearchResults(pageValue);
+        }
     });
 }
 
@@ -196,7 +208,11 @@ function getLastPage(response, pageValue) {
     if (response.total_pages > 1) {
         document.getElementById('lastPageButton').textContent = response.total_pages;
         document.getElementById('lastPageButton').addEventListener('click', function () {
-            loadPopularMovies(response.total_pages);
+            if (document.getElementById("searchInput").value === '') {
+                loadPopularMovies(response.total_pages);
+            } else {
+                loadSearchResults(response.total_pages);
+            }
         });
     }
     if (pageValue === response.total_pages) {
@@ -213,7 +229,11 @@ function getStepBack(pageValue) {
         document.getElementById('stepBackPageButton').remove();
     } else {
         document.getElementById('stepBackPageButton').addEventListener('click', function () {
-            loadPopularMovies(pageValue - 3);
+            if (document.getElementById("searchInput").value === '') {
+                loadPopularMovies(pageValue - 3);
+            } else {
+                loadSearchResults(pageValue - 3);
+            }
         });
     }
 }
@@ -223,7 +243,11 @@ function getStepForward(response, pageValue) {
         document.getElementById('stepForwardPageButton').remove();
     } else {
         document.getElementById('stepForwardPageButton').addEventListener('click', function () {
-            loadPopularMovies(pageValue + 3);
+            if (document.getElementById("searchInput").value === '') {
+                loadPopularMovies(pageValue + 3);
+            } else {
+                loadSearchResults(pageValue + 3);
+            }
         });
     }
 }
@@ -235,11 +259,20 @@ function getAdditionalPageButtons(pageValue, response) {
     } else {
         document.getElementById('backPageButton').textContent = `${pageValue - 1}`;
         document.getElementById('backPageButton').addEventListener('click', function () {
-            loadPopularMovies(pageValue - 1);
+            if (document.getElementById("searchInput").value === '') {
+                loadPopularMovies(pageValue - 1);
+            } else {
+                loadSearchResults(pageValue - 1);
+            }
+
         });
         document.getElementById('forwardPageButton').textContent = `${pageValue + 1}`;
         document.getElementById('forwardPageButton').addEventListener('click', function () {
-            loadPopularMovies(pageValue + 1);
+            if (document.getElementById("searchInput").value === '') {
+                loadPopularMovies(pageValue + 1);
+            } else {
+                loadSearchResults(pageValue + 1);
+            }
         });
         if (pageValue === 1) {
             document.getElementById('backPageButton').remove();
@@ -248,14 +281,4 @@ function getAdditionalPageButtons(pageValue, response) {
             document.getElementById('forwardPageButton').remove();
         }
     }
-}
-
-function setOpacityOnList(list) {
-    if (movieOpacity < 1) {
-        movieOpacity += .030;
-        setTimeout(function () {
-            setOpacityOnList(list);
-        }, 50);
-    }
-    list.style.opacity = `${movieOpacity}`;
 }
