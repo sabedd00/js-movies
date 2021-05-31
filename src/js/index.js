@@ -27,6 +27,7 @@ function loadPopularMovies(pageValue) {
         if (xhr.status === 200 && xhr.readyState === 4) {
             document.body.style.background = '#191919';
             let response = JSON.parse(xhr.responseText);
+            window.scrollTo({top: 0});
 
             setMovieList(xhr, response);
             initPagination(pageValue, response);

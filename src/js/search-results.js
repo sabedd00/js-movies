@@ -27,6 +27,7 @@ export function loadSearchResults(pageValue) {
             let response = JSON.parse(xhr.responseText);
             document.body.style.background = '#191919';
             mainContent.innerHTML = ' ';
+            window.scrollTo({top: 0, behavior: 'smooth'});
 
             createMovieListContent(response);
             setNoSearchResultsAreAvailable(response);

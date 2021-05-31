@@ -36,7 +36,7 @@ function setMovieDetailsOnLoadEventListener(xhr) {
                 changeBackgroundByMovie(response);
                 window.scroll(0, 0);
                 movieDetails.innerHTML = ' ';
-                document.getElementById('searchInput').value = ''
+                document.getElementById('searchInput').value = '';
 
                 movieDetails.append(document.getElementById('movieDetailsTemplate').content.cloneNode(true));
 
