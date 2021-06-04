@@ -95,7 +95,6 @@ body {
     height: 500px;
     justify-content: space-between;
     gap: 10px;
-    animation: smooth 2s ease;
 }
 
 .poster__img {
@@ -109,6 +108,7 @@ body {
     width: 100%;
     height: 100%;
     border: none;
+    animation: smooth 3s ease;
 }
 
 .trailer__content {

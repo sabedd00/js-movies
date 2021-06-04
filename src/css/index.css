@@ -182,6 +182,6 @@ body {
     visibility: hidden;
 }
 
-.active {
+.active-page__button {
     background-color: #191919;
 }
