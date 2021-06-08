@@ -15,10 +15,11 @@ import {
 
 setSearchFormEventListeners();
 let evt;
+setLoadSearchResultContentListener();
 
 export function loadSearchResults(pageValue) {
     let xhr = new XMLHttpRequest();
-    let input = document.getElementById("searchInput");
+    let input = document.getElementById('searchInput');
     let url = BASE_URL + MOVIES_SEARCH_QUERY + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue + '&' + `query=${input.value}`;
 
     xhr.onload = function () {
@@ -28,6 +29,8 @@ export function loadSearchResults(pageValue) {
             document.body.style.background = '#191919';
             mainContent.innerHTML = ' ';
             window.scrollTo({top: 0, behavior: 'smooth'});
+
+            localStorage.setItem('inputValue', document.getElementById('searchInput').value);
 
             createMovieListContent(response);
             setNoSearchResultsAreAvailable(response);
@@ -67,7 +70,8 @@ export function setSearchFormEventListeners() {
     input.addEventListener("keypress", function (event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
-                loadSearchResults();
+                history.pushState({page: 'search', page_id: 1}, '', `search?page=${1}`);
+                loadSearchResults(1);
             }
         }
     );
@@ -78,6 +82,17 @@ export function setSearchFormEventListeners() {
 
     searchButton.addEventListener('click', function (event) {
         event.preventDefault();
-        loadSearchResults();
+        history.pushState({page: 'search', page_id: 1}, '', `search?page=${1}`);
+        loadSearchResults(1);
     })
 }
+
+function setLoadSearchResultContentListener() {
+    window.addEventListener("load", function (event) {
+        if (history.state.page === 'search') {
+            let inputValue = localStorage.getItem('inputValue')
+            loadSearchResults(history.state.page_id);
+        }
+    });
+}
+

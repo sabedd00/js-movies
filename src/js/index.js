@@ -18,7 +18,11 @@ setHeaderLogoOnClickListener();
 setLoadPopularContentListener();
 
 window.addEventListener('popstate', () => {
-    loadPopularMovies(history.state.page_id);
+    if (document.getElementById('searchInput').value == null) {
+        loadPopularMovies(history.state.page_id);
+    } else {
+        loadSearchResults(history.state.page_id);
+    }
 });
 
 function loadPopularMovies(pageValue) {
@@ -158,9 +162,16 @@ function getFirstPage(response, pageValue) {
         document.getElementById('firstPageButton').style.visibility = 'visible';
         document.getElementById('firstPageButton').addEventListener('click', function () {
             if (document.getElementById("searchInput").value === '') {
-                history.pushState({page_id: response.total_pages / response.total_pages}, '', response.total_pages / response.total_pages);
+                history.pushState({
+                    page: 'popular',
+                    page_id: response.total_pages / response.total_pages
+                }, '', `popular?page=${response.total_pages / response.total_pages}`);
                 loadPopularMovies(response.total_pages / response.total_pages);
             } else {
+                history.pushState({
+                    page: 'search',
+                    page_id: response.total_pages
+                }, '', `search?page=${response.total_pages}`);
                 loadSearchResults(response.total_pages / response.total_pages);
             }
         });
@@ -174,9 +185,10 @@ function getNextPage(pageValue) {
         if (pageValue >= 1) {
             pageValue++;
             if (document.getElementById("searchInput").value === '') {
-                history.pushState({page_id: pageValue}, '', pageValue);
+                history.pushState({page: 'popular', page_id: pageValue}, '', `popular?page=${pageValue}`);
                 loadPopularMovies(pageValue);
             } else {
+                history.pushState({page: 'search', page_id: pageValue}, '', `search?page=${pageValue}`);
                 loadSearchResults(pageValue);
             }
         }
@@ -188,9 +200,10 @@ function getPreviousPage(pageValue) {
         document.getElementById('prevPageButton').addEventListener('click', function () {
             pageValue--;
             if (document.getElementById("searchInput").value === '') {
-                history.pushState({page_id: pageValue}, '', pageValue);
+                history.pushState({page: 'popular', page_id: pageValue}, '', `popular?page=${pageValue}`);
                 loadPopularMovies(pageValue);
             } else {
+                history.pushState({page: 'search', page_id: pageValue}, '', `search?page=${pageValue}`);
                 loadSearchResults(pageValue);
             }
         });
@@ -203,9 +216,10 @@ function getCurrentPage(pageValue) {
     document.getElementById('currentPageButton').textContent = pageValue;
     document.getElementById('currentPageButton').addEventListener('click', function () {
         if (document.getElementById("searchInput").value === '') {
-            history.pushState({page_id: pageValue}, '', pageValue);
+            history.pushState({page: 'popular', page_id: pageValue}, '', `popular?page=${pageValue}`);
             loadPopularMovies(pageValue);
         } else {
+            history.pushState({page: 'search', page_id: pageValue}, '', `search?page=${pageValue}`);
             loadSearchResults(pageValue);
         }
     });
@@ -216,9 +230,16 @@ function getLastPage(response, pageValue) {
         document.getElementById('lastPageButton').textContent = response.total_pages;
         document.getElementById('lastPageButton').addEventListener('click', function () {
             if (document.getElementById("searchInput").value === '') {
-                history.pushState({page_id: response.total_pages}, '', response.total_pages);
+                history.pushState({
+                    page: 'popular',
+                    page_id: response.total_pages
+                }, '', `popular?page=${response.total_pages}`);
                 loadPopularMovies(response.total_pages);
             } else {
+                history.pushState({
+                    page: 'search',
+                    page_id: response.total_pages
+                }, '', `search?page=${response.total_pages}`);
                 loadSearchResults(response.total_pages);
             }
         });
@@ -238,9 +259,10 @@ function getStepBack(pageValue) {
     } else {
         document.getElementById('stepBackPageButton').addEventListener('click', function () {
             if (document.getElementById("searchInput").value === '') {
-                history.pushState({page_id: pageValue - 3}, '', pageValue - 3);
+                history.pushState({page: 'popular', page_id: pageValue - 3}, '', `popular?page=${pageValue - 3}`);
                 loadPopularMovies(pageValue - 3);
             } else {
+                history.pushState({page: 'search', page_id: pageValue - 3}, '', `search?page=${pageValue - 3}`);
                 loadSearchResults(pageValue - 3);
             }
         });
@@ -253,9 +275,10 @@ function getStepForward(response, pageValue) {
     } else {
         document.getElementById('stepForwardPageButton').addEventListener('click', function () {
             if (document.getElementById("searchInput").value === '') {
-                history.pushState({page_id: pageValue + 3}, '', pageValue + 3);
+                history.pushState({page: 'popular', page_id: pageValue + 3}, '', `popular?page=${pageValue + 3}`);
                 loadPopularMovies(pageValue + 3);
             } else {
+                history.pushState({page: 'search', page_id: pageValue + 3}, '', `search?page=${pageValue + 3}`);
                 loadSearchResults(pageValue + 3);
             }
         });
@@ -270,9 +293,10 @@ function getAdditionalPageButtons(pageValue, response) {
         document.getElementById('backPageButton').textContent = `${pageValue - 1}`;
         document.getElementById('backPageButton').addEventListener('click', function () {
             if (document.getElementById("searchInput").value === '') {
-                history.pushState({page_id: pageValue - 1}, '', pageValue - 1);
+                history.pushState({page: 'popular', page_id: pageValue - 1}, '', `popular?page=${pageValue - 1}`);
                 loadPopularMovies(pageValue - 1);
             } else {
+                history.pushState({page: 'search', page_id: pageValue - 1}, '', `search?page=${pageValue - 1}`);
                 loadSearchResults(pageValue - 1);
             }
 
@@ -280,9 +304,10 @@ function getAdditionalPageButtons(pageValue, response) {
         document.getElementById('forwardPageButton').textContent = `${pageValue + 1}`;
         document.getElementById('forwardPageButton').addEventListener('click', function () {
             if (document.getElementById("searchInput").value === '') {
-                history.pushState({page_id: pageValue + 1}, '', pageValue + 1);
+                history.pushState({page: 'popular', page_id: pageValue + 1}, '', `popular?page=${pageValue + 1}`);
                 loadPopularMovies(pageValue + 1);
             } else {
+                history.pushState({page: 'search', page_id: pageValue + 1}, '', `search?page=${pageValue + 1}`);
                 loadSearchResults(pageValue + 1);
             }
         });
@@ -297,10 +322,15 @@ function getAdditionalPageButtons(pageValue, response) {
 
 function setLoadPopularContentListener() {
     if (history.state === null) {
+        history.pushState({page: 'popular', page_id: 1}, '', 'popular?page=1')
         loadPopularMovies(1);
     } else {
         window.addEventListener("load", function (event) {
-            loadPopularMovies(history.state.page_id);
+            if (history.state.page === 'popular') {
+                loadPopularMovies(history.state.page_id);
+            } else {
+                loadSearchResults(history.state.page_id);
+            }
         });
     }
 }
