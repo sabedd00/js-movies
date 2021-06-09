@@ -10,12 +10,10 @@ import {
 } from "./config";
 import {
     setMovieCardClickListener,
-    getData, createMovieListContent, initPagination
+    getData, createMovieListContent, initPagination, saveInputValue, getSearchResults
 } from "./index";
 
 setSearchFormEventListeners();
-let evt;
-setLoadSearchResultContentListener();
 
 export function loadSearchResults(pageValue) {
     let xhr = new XMLHttpRequest();
@@ -24,13 +22,10 @@ export function loadSearchResults(pageValue) {
 
     xhr.onload = function () {
         if (xhr.status === 200 && xhr.readyState === 4) {
-            let mainContent = document.getElementById('mainContent');
             let response = JSON.parse(xhr.responseText);
             document.body.style.background = '#191919';
-            mainContent.innerHTML = ' ';
-            window.scrollTo({top: 0, behavior: 'smooth'});
-
-            localStorage.setItem('inputValue', document.getElementById('searchInput').value);
+            window.scrollTo({top: 0});
+            saveInputValue();
 
             createMovieListContent(response);
             setNoSearchResultsAreAvailable(response);
@@ -38,17 +33,10 @@ export function loadSearchResults(pageValue) {
             let movieItem = document.getElementsByClassName('movie__item');
             setMovieCardClickListener(response, movieItem);
 
-            if (pageValue === undefined) {
-                pageValue = 1;
-                initPagination(pageValue, response);
-            } else {
-                initPagination(pageValue, response);
-            }
+            initPagination(pageValue, response);
         }
     }
-
     getData(xhr, url);
-    evt.preventDefault();
 }
 
 function setNoSearchResultsAreAvailable(response) {
@@ -70,8 +58,7 @@ export function setSearchFormEventListeners() {
     input.addEventListener("keypress", function (event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
-                history.pushState({page: 'search', page_id: 1}, '', `search?page=${1}`);
-                loadSearchResults(1);
+                getSearchResults(1);
             }
         }
     );
@@ -82,17 +69,7 @@ export function setSearchFormEventListeners() {
 
     searchButton.addEventListener('click', function (event) {
         event.preventDefault();
-        history.pushState({page: 'search', page_id: 1}, '', `search?page=${1}`);
-        loadSearchResults(1);
+        getSearchResults(1);
     })
-}
-
-function setLoadSearchResultContentListener() {
-    window.addEventListener("load", function (event) {
-        if (history.state.page === 'search') {
-            let inputValue = localStorage.getItem('inputValue')
-            loadSearchResults(history.state.page_id);
-        }
-    });
 }
 
