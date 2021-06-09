@@ -16,14 +16,7 @@ import {loadSearchResults} from "./search-results";
 
 setHeaderLogoOnClickListener();
 setLoadPopularContentListener();
-
-window.addEventListener('popstate', () => {
-    if (document.getElementById('searchInput').value == null) {
-        loadPopularMovies(history.state.page_id);
-    } else {
-        loadSearchResults(history.state.page_id);
-    }
-});
+setPopStateListener();
 
 function loadPopularMovies(pageValue) {
     let xhr = new XMLHttpRequest();
@@ -125,10 +118,18 @@ export function setMovieCardClickListener(response, movieItem) {
     for (let i = 0; i < movieItem.length; i++) {
         movieItem[i].addEventListener('click', () => {
             let id = response.results[i].id;
+            history.pushState({
+                page: 'details',
+                details_id: `${response.results[i].id}`
+            }, '', `${response.results[i].title}`);
             loadMovieDetails(id);
         });
         movieItem[i].addEventListener('click', () => {
             let id = response.similar.results[i].id;
+            history.pushState({
+                page: 'details',
+                details_id: `${response.similar.results[i].id}`
+            }, '', `${response.similar.results[i].title}`);
             loadMovieDetails(id);
         })
     }
@@ -330,9 +331,11 @@ function setLoadPopularContentListener() {
         window.addEventListener("load", function (event) {
             if (history.state.page === 'popular') {
                 loadPopularMovies(history.state.page_id);
-            } else {
+            } else if (history.state.page === 'search') {
                 document.getElementById('searchInput').value = localStorage.getItem('inputValue');
                 loadSearchResults(history.state.page_id);
+            } else if (history.state.page === 'details') {
+                loadMovieDetails(history.state.details_id);
             }
         });
     }
@@ -341,4 +344,17 @@ function setLoadPopularContentListener() {
 function saveInputValue() {
     let input = document.getElementById('searchInput');
     localStorage.setItem("inputValue", input.value);
+}
+
+function setPopStateListener() {
+    window.addEventListener('popstate', () => {
+        if (history.state.page === 'popular') {
+            loadPopularMovies(history.state.page_id);
+        } else if (history.state.page === 'search') {
+            document.getElementById('searchInput').value = localStorage.getItem('inputValue');
+            loadSearchResults(history.state.page_id);
+        } else if (history.state.page === 'details') {
+            loadMovieDetails(history.state.details_id);
+        }
+    });
 }
