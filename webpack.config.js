@@ -7,6 +7,7 @@ module.exports = {
     entry: {
         index: './src/js/index.js',
         config: './src/js/config.js',
+        pagination: './src/js/pagination.js',
         movieDetails: './src/js/movie-details.js',
         searchResults: './src/js/search-results.js',
     },
