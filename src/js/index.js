@@ -37,6 +37,8 @@ function loadPopularMovies(pageValue) {
 
             setMovieList(xhr, response);
             initPagination(pageValue, response);
+            saveInputValue();
+
         }
     }
     getData(xhr, url);
@@ -329,8 +331,14 @@ function setLoadPopularContentListener() {
             if (history.state.page === 'popular') {
                 loadPopularMovies(history.state.page_id);
             } else {
+                document.getElementById('searchInput').value = localStorage.getItem('inputValue');
                 loadSearchResults(history.state.page_id);
             }
         });
     }
+}
+
+function saveInputValue() {
+    let input = document.getElementById('searchInput');
+    localStorage.setItem("inputValue", input.value);
 }
