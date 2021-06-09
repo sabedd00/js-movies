@@ -24,7 +24,6 @@ export function loadMovieDetails(movieId) {
     let url = BASE_URL + `movie/${movieId}?` + API_KEY + QUERY_APPEND_TO_RESPONSE + 'videos,similar';
 
     setMovieDetailsOnLoadEventListener(xhr);
-
     getData(xhr, url);
 }
 
@@ -39,10 +38,8 @@ function setMovieDetailsOnLoadEventListener(xhr) {
                 document.getElementById('searchInput').value = '';
 
                 movieDetails.append(document.getElementById('movieDetailsTemplate').content.cloneNode(true));
-
                 setMovieDetailsContent(response);
                 setSimilarMovies(response);
-
                 setMovieCardClickListener(response, document.getElementsByClassName('similar-movie__item'));
             }
         }
@@ -126,7 +123,7 @@ function setSimilarMovies(response) {
             poster.alt = "Similar movie poster";
             let title = document.createElement('h3');
             title.className = "similar-movie__title";
-            if(!!isNaN(movie.release_date)) {
+            if (!!isNaN(movie.release_date)) {
                 title.textContent = `${movie.title}` + ` (${new Date(movie.release_date).getFullYear()})`;
             } else {
                 title.textContent = `${movie.title}`

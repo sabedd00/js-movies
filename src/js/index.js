@@ -13,12 +13,13 @@ import {
 } from "./config";
 import emptyPoster from "../images/empty-poster.png";
 import {loadSearchResults} from "./search-results";
+import {getMovieDetails, getPopularMovies, initPagination} from "./pagination";
 
 setHeaderLogoOnClickListener();
 setLoadPopularContentListener();
 setPopStateListener();
 
-function loadPopularMovies(pageValue) {
+export function loadPopularMovies(pageValue) {
     let xhr = new XMLHttpRequest();
     let url = BASE_URL + QUERY_POPULAR_MOVIES + API_KEY + LANGUAGE_QUERY + ENG_LANGUAGE + '&' + QUERY_PAGE + pageValue;
 
@@ -105,7 +106,7 @@ function showOverlayDetails(movie, overlay, overlayReleaseYear, overlayOverview,
     }
 }
 
-function setMovieList(xhr, response) {
+export function setMovieList(xhr, response) {
     createMovieListContent(response);
 
     let movieItem = document.getElementsByClassName('movie__item');
@@ -116,19 +117,11 @@ export function setMovieCardClickListener(response, movieItem) {
     for (let i = 0; i < movieItem.length; i++) {
         movieItem[i].addEventListener('click', () => {
             let id = response.results[i].id;
-            history.pushState({
-                page: 'details',
-                details_id: `${response.results[i].id}`
-            }, '', `${response.results[i].id}`);
-            loadMovieDetails(id);
+            getMovieDetails(id);
         });
         movieItem[i].addEventListener('click', () => {
             let id = response.similar.results[i].id;
-            history.pushState({
-                page: 'details',
-                details_id: `${response.similar.results[i].id}`
-            }, '', `${response.similar.results[i].id}`);
-            loadMovieDetails(id);
+            getMovieDetails(id);
         })
     }
 }
@@ -141,161 +134,14 @@ export function getData(xhr, url) {
 function setHeaderLogoOnClickListener() {
     let headerLogo = document.getElementById('headerLogo');
     headerLogo.addEventListener('click', function () {
+        document.getElementById('searchInput').value = '';
         getPopularMovies(1);
     })
 }
 
-export function initPagination(pageValue, response) {
-    let mainContent = document.getElementById('mainContent');
-    mainContent.append(document.getElementById('paginationTemplate').content.cloneNode(true));
-
-    getPreviousPage(pageValue);
-    getFirstPage(response, pageValue);
-    getStepBack(pageValue);
-    getCurrentPage(pageValue);
-    getStepForward(response, pageValue);
-    getNextPage(pageValue);
-    getLastPage(response, pageValue);
-    getAdditionalPageButtons(pageValue, response);
-}
-
-function getFirstPage(response, pageValue) {
-    if (pageValue > 1 && pageValue >= 3) {
-        document.getElementById('firstPageButton').style.visibility = 'visible';
-        document.getElementById('firstPageButton').addEventListener('click', function () {
-            if (document.getElementById("searchInput").value === '') {
-                getPopularMovies(response.total_pages / response.total_pages);
-            } else {
-                getSearchResults(response.total_pages / response.total_pages);
-            }
-        });
-    } else {
-        document.getElementById('firstPageButton').remove();
-    }
-}
-
-function getNextPage(pageValue) {
-    document.getElementById('nextPageButton').addEventListener('click', function () {
-        if (pageValue >= 1) {
-            pageValue++;
-            if (document.getElementById("searchInput").value === '') {
-                getPopularMovies(pageValue);
-            } else {
-                getSearchResults(pageValue);
-            }
-        }
-    });
-}
-
-function getPreviousPage(pageValue) {
-    if (pageValue > 1) {
-        document.getElementById('prevPageButton').addEventListener('click', function () {
-            pageValue--;
-            if (document.getElementById("searchInput").value === '') {
-                getPopularMovies(pageValue);
-            } else {
-                getSearchResults(pageValue);
-            }
-        });
-    } else {
-        document.getElementById('prevPageButton').remove();
-    }
-}
-
-function getCurrentPage(pageValue) {
-    document.getElementById('currentPageButton').textContent = pageValue;
-    document.getElementById('currentPageButton').addEventListener('click', function () {
-        if (document.getElementById("searchInput").value === '') {
-            getPopularMovies(pageValue);
-        } else {
-            getSearchResults(pageValue);
-        }
-    });
-}
-
-function getLastPage(response, pageValue) {
-    if (response.total_pages > 1) {
-        document.getElementById('lastPageButton').textContent = response.total_pages;
-        document.getElementById('lastPageButton').addEventListener('click', function () {
-            if (document.getElementById("searchInput").value === '') {
-                getPopularMovies(response.total_pages);
-            } else {
-                getSearchResults(response.total_pages);
-            }
-        });
-    }
-    if (pageValue === response.total_pages) {
-        document.getElementById('lastPageButton').remove();
-        document.getElementById('nextPageButton').style.visibility = 'hidden';
-    }
-    if (pageValue === response.total_pages - 1) {
-        document.getElementById('lastPageButton').remove();
-    }
-}
-
-function getStepBack(pageValue) {
-    if (pageValue < 4) {
-        document.getElementById('stepBackPageButton').remove();
-    } else {
-        document.getElementById('stepBackPageButton').addEventListener('click', function () {
-            if (document.getElementById("searchInput").value === '') {
-                getSearchResults(pageValue - 3);
-            } else {
-                getSearchResults(pageValue - 3);
-            }
-        });
-    }
-}
-
-function getStepForward(response, pageValue) {
-    if (pageValue + 3 > response.total_pages) {
-        document.getElementById('stepForwardPageButton').remove();
-    } else {
-        document.getElementById('stepForwardPageButton').addEventListener('click', function () {
-            if (document.getElementById("searchInput").value === '') {
-                getPopularMovies(pageValue + 3);
-            } else {
-                getSearchResults(pageValue + 3);
-            }
-        });
-    }
-}
-
-function getAdditionalPageButtons(pageValue, response) {
-    if (document.getElementById('stepForwardPageButton') && document.getElementById('stepBackPageButton') === true) {
-        document.getElementById('backPageButton').remove();
-        document.getElementById('forwardPageButton').remove();
-    } else {
-        document.getElementById('backPageButton').textContent = `${pageValue - 1}`;
-        document.getElementById('backPageButton').addEventListener('click', function () {
-            if (document.getElementById("searchInput").value === '') {
-                getPopularMovies(pageValue - 1);
-            } else {
-                getSearchResults(pageValue - 1);
-            }
-
-        });
-        document.getElementById('forwardPageButton').textContent = `${pageValue + 1}`;
-        document.getElementById('forwardPageButton').addEventListener('click', function () {
-            if (document.getElementById("searchInput").value === '') {
-                getPopularMovies(pageValue + 1);
-            } else {
-                getSearchResults(pageValue + 1);
-            }
-        });
-        if (pageValue === 1) {
-            document.getElementById('backPageButton').remove();
-        }
-        if (response.total_pages === pageValue) {
-            document.getElementById('forwardPageButton').remove();
-        }
-    }
-}
-
 function setLoadPopularContentListener() {
     if (history.state === null) {
-        history.pushState({page: 'popular', page_id: 1}, '', 'popular?page=1')
-        loadPopularMovies(1);
+        getPopularMovies(1);
     } else {
         window.addEventListener("load", function (event) {
             getPageContent();
@@ -325,14 +171,4 @@ function getPageContent() {
     } else if (history.state.page === 'details') {
         loadMovieDetails(history.state.details_id);
     }
-}
-
-function getPopularMovies(pageValue) {
-    history.pushState({page: 'popular', page_id: pageValue}, '', `popular?page=${pageValue}`);
-    loadPopularMovies(pageValue);
-}
-
-export function getSearchResults(pageValue) {
-    history.pushState({page: 'search', page_id: pageValue}, '', `search?page=${pageValue}`);
-    loadSearchResults(pageValue);
 }
