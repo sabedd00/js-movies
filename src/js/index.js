@@ -1,7 +1,7 @@
 'use strict';
 
 import Logo from '../images/tmdb-logo.svg';
-import {loadMovieDetails, showPoster} from "./movie-details.js";
+import {loadMovieDetails, setPoster} from "./movie-details.js";
 import '../css/index.css';
 import {
     API_KEY,
@@ -86,7 +86,7 @@ function createOverlayContent(movie, overlay) {
 function createMoviePosterContent(movie, poster) {
     poster.className = "movie__item__img";
     poster.id = "moviePoster";
-    showPoster(movie, poster, BIG_IMAGE_SIZE);
+    setPoster(movie, poster, BIG_IMAGE_SIZE);
     poster.alt = "Movie poster";
 }
 

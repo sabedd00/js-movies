@@ -36,7 +36,7 @@ function setMovieDetailsOnLoadEventListener(xhr) {
                 movieDetails.append(document.getElementById('movieDetailsTemplate').content.cloneNode(true));
                 let response = JSON.parse(xhr.responseText);
 
-                changeBackgroundByMovie(response);
+                changeBackgroundByMovieContent(response);
                 scrollToTop();
                 setMovieDetailsContent(response);
                 setSimilarMovies(response);
@@ -47,21 +47,21 @@ function setMovieDetailsOnLoadEventListener(xhr) {
 }
 
 function setMovieDetailsContent(response) {
-    showRating(response);
-    showAdditionalDetails(response);
-    showMediaContent(response);
+    setRating(response);
+    setAdditionalDetails(response);
+    setMediaContent(response);
     document.getElementById('movieTitleByDetails').textContent = `${response.title}`;
     document.getElementById('genresList').innerHTML = `${response.genres.map(genre => genre.name).join(', ')}`;
     document.getElementById('overview').textContent = `${response.overview}`;
 }
 
-function showAdditionalDetails(response) {
-    showReleaseDate(response);
-    showRuntime(response);
-    showBudget(response);
+function setAdditionalDetails(response) {
+    setReleaseDate(response);
+    setRuntime(response);
+    setBudget(response);
 }
 
-function showReleaseDate(response) {
+function setReleaseDate(response) {
     if (response.release_date === '') {
         document.getElementById('releaseDate').textContent = '';
         document.getElementById('releaseDate').style.marginRight = '0';
@@ -71,7 +71,7 @@ function showReleaseDate(response) {
     }
 }
 
-function showRuntime(response) {
+function setRuntime(response) {
     if (response.runtime == null || response.runtime === 0) {
         document.getElementById('runningTime').innerHTML = '';
         document.getElementById('runningTime').style.marginRight = '0';
@@ -82,7 +82,7 @@ function showRuntime(response) {
     }
 }
 
-function showBudget(response) {
+function setBudget(response) {
     if (response.budget.toLocaleString() !== '0') {
         document.getElementById('budget').innerHTML = '$' + response.budget.toLocaleString();
     } else {
@@ -91,7 +91,7 @@ function showBudget(response) {
     }
 }
 
-function showRating(response) {
+function setRating(response) {
     if (response.vote_average === 0) {
         document.getElementById('rating').innerHTML = ''
         document.getElementById('rating').style.background = '0';
@@ -100,12 +100,12 @@ function showRating(response) {
     }
 }
 
-function showMediaContent(response) {
-    showDetailsPoster(response);
-    showTrailer(response);
+function setMediaContent(response) {
+    setDetailsPoster(response);
+    setTrailer(response);
 }
 
-function showDetailsPoster(response) {
+function setDetailsPoster(response) {
     let poster = document.getElementById('posterByDetails');
     poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + response.poster_path}`;
     if (poster.src === 'https://image.tmdb.org/t/p/w342null') {
@@ -113,7 +113,7 @@ function showDetailsPoster(response) {
     }
 }
 
-function showTrailer(response) {
+function setTrailer(response) {
     if (response.videos.results.length === 0) {
         document.getElementById('trailerContent').innerHTML = ' ';
     } else {
@@ -145,16 +145,8 @@ function setSimilarMovies(response) {
 
 function createDetailsPosterContent(movie, poster) {
     poster.className = "similar-movie__img";
-    showPoster(movie, poster, SMALL_IMAGE_SIZE);
+    setPoster(movie, poster, SMALL_IMAGE_SIZE);
     poster.alt = "Similar movie poster";
-}
-
-export function showPoster(movie, poster, size) {
-    if (movie.poster_path == null) {
-        poster.src = emptyPoster;
-    } else {
-        poster.src = `${BASE_IMAGE_URL + size + movie.poster_path}`;
-    }
 }
 
 function createDetailsTitleContent(movie, title) {
@@ -163,6 +155,14 @@ function createDetailsTitleContent(movie, title) {
         title.textContent = `${movie.title}` + ` (${new Date(movie.release_date).getFullYear()})`;
     } else {
         title.textContent = `${movie.title}`
+    }
+}
+
+export function setPoster(movie, poster, size) {
+    if (movie.poster_path == null) {
+        poster.src = emptyPoster;
+    } else {
+        poster.src = `${BASE_IMAGE_URL + size + movie.poster_path}`;
     }
 }
 
@@ -179,7 +179,7 @@ function initSlider() {
     });
 }
 
-function changeBackgroundByMovie(response) {
+function changeBackgroundByMovieContent(response) {
     let background = BASE_IMAGE_URL + ORIGINAL_IMAGE_SIZE + response.backdrop_path;
     document.body.style.backgroundImage = 'url(' + background + ')';
 }
