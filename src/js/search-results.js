@@ -9,8 +9,7 @@ import {
     QUERY_PAGE
 } from "./config";
 import {
-    setMovieCardClickListener,
-    getData, createMovieListContent, saveInputValue, setMovieList
+    getData, saveInputValue, setMovieList, scrollToTop
 } from "./index";
 import {initPagination, getSearchResults} from './pagination';
 
@@ -28,10 +27,9 @@ export function loadSearchResults(pageValue) {
 function setSearchResultsOnLoadEventListener(xhr, pageValue) {
     xhr.onload = function () {
         if (xhr.status === 200 && xhr.readyState === 4) {
-            let response = JSON.parse(xhr.responseText);
             document.body.style.background = '#191919';
-            window.scrollTo({top: 0});
-
+            let response = JSON.parse(xhr.responseText);
+            scrollToTop();
             setMovieList(xhr, response);
             setEmptySearchResults(response);
             initPagination(pageValue, response);
