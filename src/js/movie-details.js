@@ -1,7 +1,8 @@
 'use strict';
 
+import {getData, setMovieCardClickListener} from './index.js';
 import logo from '../images/tmdb-logo.svg';
-import { tns } from '../../node_modules/tiny-slider/src/tiny-slider.js';
+import emptyPoster from '../images/empty-poster.png';
 import {
     API_KEY,
     BASE_IMAGE_URL,
@@ -12,148 +13,152 @@ import {
     URL_YOUTUBE
 } from "./config";
 import '../css/movie-details.css';
+import Glider from '/node_modules/glider-js/glider.min.js';
+import '/node_modules/glider-js/glider.min.css';
+import {setSearchFormEventListeners} from "./search-results";
+
+setSearchFormEventListeners();
 
 export function loadMovieDetails(movieId) {
     let xhr = new XMLHttpRequest();
+    let url = BASE_URL + `movie/${movieId}?` + API_KEY + QUERY_APPEND_TO_RESPONSE + 'videos,similar';
 
+    setMovieDetailsOnLoadEventListener(xhr);
+    getData(xhr, url);
+}
+
+function setMovieDetailsOnLoadEventListener(xhr) {
     xhr.addEventListener('load', function () {
             if (xhr.status === 200 && xhr.readyState === 4) {
                 let movieDetails = document.getElementById('mainContent');
                 let response = JSON.parse(xhr.responseText);
-
-                let background = BASE_IMAGE_URL + ORIGINAL_IMAGE_SIZE + response.backdrop_path;
-                document.body.style.backgroundImage = 'url(' + background + ')';
-
+                changeBackgroundByMovie(response);
                 window.scroll(0, 0);
-
-                let poster = BASE_IMAGE_URL + BIG_IMAGE_SIZE + response.poster_path;
-                let title = response.title;
-                let overview = response.overview;
-                let genres = response.genres.map(genre => genre.name).join(', ');
-                let releaseYear = new Date(response.release_date).getFullYear();
-                let runtime = response.runtime;
-                let voteAverage = response.vote_average;
-                let budget = response.budget.toLocaleString();
-                let trailer = URL_YOUTUBE + response.videos.results[0].key;
-
                 movieDetails.innerHTML = ' ';
-                let main = document.createElement('main');
-                main.className = "movie-details";
+                document.getElementById('searchInput').value = '';
 
-                let sectionDetails = document.createElement('section');
-                sectionDetails.className = "details";
-                let posterContainer = document.createElement('div');
-                posterContainer.className = "poster__img-container";
-                let posterImg = document.createElement('img');
-                posterImg.className = "poster__img"
-                posterImg.src = `${poster}`;
-                posterImg.alt = "Poster";
-                posterContainer.appendChild(posterImg);
-                let detailsContent = document.createElement('div');
-                detailsContent.className = "details__content";
-                let movieTitle = document.createElement('h1');
-                movieTitle.className = "movie__title"
-                movieTitle.textContent = `${title + ` (${releaseYear})`}`;
-                let genresList = document.createElement('div');
-                genresList.className = "genres__list";
-                genresList.innerHTML = `${genres}`;
-                let overviewContainer = document.createElement('div');
-                overviewContainer.className = "overview-container";
-                let overviewText = document.createElement('p');
-                overviewText.className = "overview__text";
-                overviewText.textContent = `${overview}`;
-                overviewContainer.appendChild(overviewText);
-                detailsContent.append(movieTitle, genresList, overviewContainer);
-                sectionDetails.append(posterContainer, detailsContent);
-
-                let additionalDetails = document.createElement('section');
-                additionalDetails.className = "additional-details";
-                let trailerContent = document.createElement('iframe');
-                trailerContent.className = "trailer";
-                trailerContent.src = `${trailer}`;
-                trailerContent.width = '800px';
-                trailerContent.height = '450px';
-                let runtimeContainer = document.createElement('div');
-                runtimeContainer.className = "running-time";
-                runtimeContainer.innerHTML = '<br>Running Time:<br>';
-                let runtimeData = document.createElement('span');
-                runtimeData.className = "meta-data";
-                runtimeData.innerHTML = `${runtime + ' mins'}`;
-                runtimeContainer.appendChild(runtimeData);
-                let voteAverageContainer = document.createElement('div');
-                voteAverageContainer.className = "vote-average";
-                voteAverageContainer.innerHTML = '<br>Vote Average:<br>';
-                let voteAverageData = document.createElement('span');
-                voteAverageData.className = "meta-data";
-                voteAverageData.innerHTML = `${voteAverage + ' / 10'}`;
-                voteAverageContainer.appendChild(voteAverageData);
-                let budgetContainer = document.createElement('div');
-                budgetContainer.className = "budget";
-                budgetContainer.innerHTML = '<br>Box office:<br>';
-                let budgetData = document.createElement('span');
-                budgetData.className = "meta-data";
-                budgetContainer.appendChild(budgetData);
-                additionalDetails.append(trailerContent, runtimeContainer, voteAverageContainer, budgetContainer);
-
-                if (budget !== '0') {
-                    budgetData.innerHTML = '$' + response.budget.toLocaleString();
-                } else {
-                    budgetContainer.innerHTML = ' ';
-                    additionalDetails.style.gridTemplateAreas = '" v v " "  k j "';
-                }
-
-                let similarMovies = document.createElement('section');
-                similarMovies.className = "similar-movies";
-                let similarMoviesList = document.createElement('div');
-                similarMoviesList.className = "similar-movies__list";
-                let similarItem = document.createElement('div');
-                similarItem.className = "similar-movie__item";
-                similarItem.id = "similarMovieItem";
-                similarMoviesList.appendChild(similarItem);
-                similarMovies.appendChild(similarMoviesList);
-                main.append(sectionDetails, additionalDetails, similarMovies);
-                movieDetails.appendChild(main);
-
-                if (response.similar.results[0] === undefined) {
-                    similarMovies.innerHTML = ' ';
-                } else {
-                    let similarMovieItem = document.getElementById('similarMovieItem');
-                    response.similar.results.forEach(function (movie) {
-                        let releaseYear = new Date(movie.release_date).getFullYear();
-                        let item = document.createElement('div');
-                        item.className = "similar-movie";
-                        item.id = "similarMovie"
-                        let poster = document.createElement('img');
-                        poster.className = "similar-movie__img";
-                        poster.src = `${BASE_IMAGE_URL + SMALL_IMAGE_SIZE + movie.poster_path}`;
-                        poster.alt = "Similar movie poster";
-                        let title = document.createElement('h3');
-                        title.className = "similar-movie__title";
-                        title.textContent = `${movie.title + ` (${releaseYear})`}`;
-                        item.append(poster, title);
-                        similarMovieItem.appendChild(item);
-                    })
-                    // let pageButtonPrev = document.createElement('button');
-                    // pageButtonPrev.className = "prev-page__button controls";
-                    // pageButtonPrev.textContent = "Prev";
-                    // let pageButtonNext = document.createElement('button');
-                    // pageButtonNext.className = "next-page__button controls";
-                    // pageButtonNext.textContent = "Next";
-
-                    tns({
-                        container: '.similar-movie__item',
-                        items: 4,
-                        "mouseDrag": true,
-                        "slideBy": "page",
-                        "rewind": true,
-                        "swipeAngle": false,
-                        "speed": 400,
-                    });
-                }
-
+                movieDetails.append(document.getElementById('movieDetailsTemplate').content.cloneNode(true));
+                setMovieDetailsContent(response);
+                setSimilarMovies(response);
+                setMovieCardClickListener(response, document.getElementsByClassName('similar-movie__item'));
             }
         }
     )
-    xhr.open("GET", BASE_URL + `movie/${movieId}?` + API_KEY + QUERY_APPEND_TO_RESPONSE + 'videos,similar', true);
-    xhr.send();
+}
+
+function setMovieDetailsContent(response) {
+    document.getElementById('movieTitleByDetails').textContent = `${response.title}`;
+
+    showRating(response);
+    showAdditionalDetails(response);
+    showMediaContent(response);
+
+    document.getElementById('genresList').innerHTML = `${response.genres.map(genre => genre.name).join(', ')}`;
+    document.getElementById('overview').textContent = `${response.overview}`;
+}
+
+function showAdditionalDetails(response) {
+    if (response.release_date === '') {
+        document.getElementById('releaseDate').textContent = '';
+        document.getElementById('releaseDate').style.marginRight = '0';
+        document.getElementById('firstDot').innerHTML = '';
+    } else {
+        document.getElementById('releaseDate').textContent = `${new Date(response.release_date).getFullYear()}`
+    }
+
+    if (response.runtime == null || response.runtime === 0) {
+        document.getElementById('runningTime').innerHTML = '';
+        document.getElementById('runningTime').style.marginRight = '0';
+        document.getElementById('secondDot').innerHTML = '';
+        document.getElementById('firstDot').innerHTML = '';
+    } else {
+        document.getElementById('runningTime').innerHTML = `${response.runtime + ' min'}`;
+    }
+
+    if (response.budget.toLocaleString() !== '0') {
+        document.getElementById('budget').innerHTML = '$' + response.budget.toLocaleString();
+    } else {
+        document.getElementById('budget').innerHTML = ' ';
+        document.getElementById('secondDot').innerHTML = '';
+    }
+}
+
+function showRating(response) {
+    if (response.vote_average === 0) {
+        document.getElementById('rating').innerHTML = ''
+        document.getElementById('rating').style.background = '0';
+    } else {
+        document.getElementById('voteAverage').innerHTML = `${response.vote_average}`;
+    }
+}
+
+function showMediaContent(response) {
+    let poster = document.getElementById('posterByDetails');
+    poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + response.poster_path}`;
+    if (poster.src === 'https://image.tmdb.org/t/p/w342null') {
+        poster.src = emptyPoster;
+    }
+
+    if (response.videos.results.length === 0) {
+        document.getElementById('trailerContent').innerHTML = ' ';
+    } else {
+        document.getElementById('trailer').src = `${URL_YOUTUBE + response.videos.results[0].key}`;
+    }
+}
+
+function setSimilarMovies(response) {
+    let similarMovies = document.getElementById('similarMovies');
+    if (response.similar.total_results === 0) {
+        similarMovies.remove();
+        document.getElementById('mainContent').style.margin = '2.5% 0 2.5% 0';
+    } else {
+        let similarMovieList = document.getElementById('similarMovieList');
+        response.similar.results.forEach(function (movie) {
+            let item = document.createElement('div');
+            item.className = "similar-movie__item";
+            item.id = "similarMovie"
+            let poster = document.createElement('img');
+            poster.className = "similar-movie__img";
+            showPoster(movie, poster, SMALL_IMAGE_SIZE);
+            poster.alt = "Similar movie poster";
+            let title = document.createElement('h3');
+            title.className = "similar-movie__title";
+            if (!!isNaN(movie.release_date)) {
+                title.textContent = `${movie.title}` + ` (${new Date(movie.release_date).getFullYear()})`;
+            } else {
+                title.textContent = `${movie.title}`
+            }
+
+            item.append(poster, title);
+            similarMovieList.appendChild(item);
+        })
+
+        initSlider();
+    }
+}
+
+export function showPoster(movie, poster, size) {
+    if (movie.poster_path == null) {
+        poster.src = emptyPoster;
+    } else {
+        poster.src = `${BASE_IMAGE_URL + size + movie.poster_path}`;
+    }
+}
+
+function initSlider() {
+    new Glider(document.querySelector('.similar-movie__list'), {
+        slidesToShow: 6,
+        slidesToScroll: 3,
+        draggable: true,
+        dots: '.dots',
+        arrows: {
+            prev: '.glider-prev',
+            next: '.glider-next'
+        }
+    });
+}
+
+function changeBackgroundByMovie(response) {
+    let background = BASE_IMAGE_URL + ORIGINAL_IMAGE_SIZE + response.backdrop_path;
+    document.body.style.backgroundImage = 'url(' + background + ')';
 }

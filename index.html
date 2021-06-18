@@ -1,33 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <title><%= htmlWebpackPlugin.options.title %></title>
     <script src="./config.bundle.js"></script>
+    <script src="./pagination.bundle.js"></script>
     <script src="./movieDetails.bundle.js"></script>
     <script src="./searchResults.bundle.js"></script>
-</head>
-<body>
-<header class="header">
-    <div class="header__content">
-        <img class="header-logo__img" src="./bb8aa703cb92c9aa31fc.svg" alt="logo">
-        <div class="search__content">
-            <form id="searchForm">
-                <input class="form-control" id="searchText" placeholder="Search Movie....">
-            </form>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <header class="header" id="header">
+      <div class="header__content">
+        <img class="header-logo__img" id="headerLogo" src="./bb8aa703cb92c9aa31fc.svg" alt="logo">
+        <div class="search">
+          <form id="searchForm" class="search__form">
+            <input class="search__input" id="searchInput" placeholder="Which movie are you looking for?"
+                   autocomplete="off">
+            <button class="search__button" id="searchButton" type="submit"><i
+                class="fa fa-search"></i></button>
+          </form>
         </div>
-    </div>
-</header>
+      </div>
+    </header>
 
-<div class="main-content" id="mainContent">
-    <div class="movies-list__content" id="moviesList">
-        <h2 class="movie__title" id="movieTitle"></h2>
-        <div class="movie__item" id="movieItem"></div>
-        <h2 class="additional-movie__title" id="additionalMovieTitle"></h2>
-        <div class="additional-movie__item" id="additionalMovieItem"></div>
+    <div class="main" id="main">
+      <div class="main__content" id="mainContent">
+      </div>
     </div>
-</div>
 
-<script src="index.bundle.js"></script>
-</body>
+    <template id="movieDetailsTemplate">
+      <main class="movie-details" id="movieDetails">
+        <section class="details">
+          <h1 class="movie-details__title" id="movieTitleByDetails"></h1>
+
+          <div class="additional-details" id="additionalDetails">
+            <h4 class="release-date" id="releaseDate"></h4>
+            <h4 id="firstDot">•  </h4>
+            <h4 class="running-time" id="runningTime"></h4>
+            <h4 id="secondDot">•  </h4>
+            <h4 class="budget" id="budget"></h4>
+          </div>
+
+          <div class="media__content">
+            <div class="poster__img-container">
+              <img class="poster__img" id="posterByDetails" alt="Poster">
+            </div>
+            <div class="rating" id="rating">
+              <h4 class="rating__title">IMDB Rating:</h4>
+              <i class="fa fa-star"></i>
+              <h4 class="vote-average" id="voteAverage"></h4>
+            </div>
+            <div class="trailer__content" id="trailerContent">
+              <iframe class="trailer" id="trailer"></iframe>
+            </div>
+          </div>
+
+          <div class="details__content" id="detailsContent">
+            <div class="genres__list" id="genresList"></div>
+            <div class="overview-container">
+              <p class="overview__text" id="overview"></p>
+            </div>
+          </div>
+        </section>
+
+        <section class="similar-movies" id="similarMovies">
+          <div class="similar-movies__content" id="similarMoviesContent">
+            <button class="glider-prev">‹</button>
+            <h3 class="similar-movies__title">Similar Movies</h3>
+            <div class="similar-movie__list" id="similarMovieList">
+            </div>
+            <button class="glider-next">›</button>
+            <div class="dots"></div>
+          </div>
+        </section>
+      </main>
+    </template>
+
+    <template id="paginationTemplate">
+      <div class="pagination" id="pagination">
+        <button class="pagination__button prev-page__button" id="prevPageButton"><</button>
+        <button class="pagination__button first-page__button" id="firstPageButton">1</button>
+        <button class="pagination__button step-back" id="stepBackPageButton">...</button>
+        <button class="pagination__button back-page" id="backPageButton"></button>
+        <button class="pagination__button current-page__button active-page__button" id="currentPageButton"></button>
+        <button class="pagination__button forward-page" id="forwardPageButton"></button>
+        <button class="pagination__button step-forward" id="stepForwardPageButton">...</button>
+        <button class="pagination__button last-page__button" id="lastPageButton"></button>
+        <button class="pagination__button next-page__button" id="nextPageButton">></button>
+      </div>
+    </template>
+
+    <script src="index.bundle.js"></script>
+  </body>
+
 </html>
