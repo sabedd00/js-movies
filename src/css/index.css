@@ -119,6 +119,7 @@ body {
     font-family: 'Roboto', serif;
     font-weight: 500;
     color: #F9F9F9;
+    cursor: pointer;
 }
 
 .overlay {
