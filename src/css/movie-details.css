@@ -199,3 +199,245 @@ body {
 .glider-next {
     margin-right: 3%;
 }
+
+@media only screen and (max-width: 600px) {
+    .details {
+        margin: auto;
+        width: 82%;
+    }
+
+    .movie-details__title {
+        font-size: 1.5em;
+    }
+
+    .media__content {
+        height: 250px;
+    }
+
+    .poster__img {
+        height: 250px;
+    }
+
+    .additional-details {
+        font-size: 0.8em;
+    }
+
+    .genres__list {
+        font-size: 14px;
+    }
+
+    .overview__text {
+        font-size: 0.8em;
+    }
+
+    .fa-star {
+        font-size: 0.4em;
+    }
+
+    .rating {
+        font-size: 1.2em;
+        padding: 4px;
+    }
+
+    .similar-movies {
+        width: 90%;
+    }
+
+    .similar-movies__title {
+        font-size: 1em;
+    }
+
+    .similar-movie__img {
+        height: 205px;
+    }
+
+    .similar-movie__title {
+        font-size: 0.8em;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    .details {
+        width: 84%;
+    }
+
+    .movie-details__title {
+        font-size: 1.6em;
+    }
+
+    .media__content {
+        height: 300px;
+    }
+
+    .poster__img {
+        height: 300px;
+    }
+
+    .additional-details {
+        font-size: 0.9em;
+    }
+
+    .genres__list {
+        font-size: 14px;
+    }
+
+    .overview__text {
+        font-size: 0.8em;
+    }
+
+    .fa-star {
+        font-size: 0.5em;
+    }
+
+    .rating {
+        font-size: 1.3em;
+    }
+
+    .similar-movies {
+        width: 90%;
+    }
+
+    .similar-movies__title {
+        font-size: 1.2em;
+    }
+
+    .similar-movie__img {
+        height: 220px;
+    }
+
+    .similar-movie__title {
+        font-size: 0.8em;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .details {
+        width: 86%;
+    }
+
+    .movie-details__title {
+        font-size: 1.8em;
+    }
+
+    .media__content {
+        height: 350px;
+    }
+
+    .poster__img {
+        height: 350px;
+    }
+
+    .additional-details {
+        font-size: 0.9em;
+    }
+
+    .genres__list {
+        font-size: 17px;
+    }
+
+    .overview__text {
+        font-size: 0.9em;
+    }
+
+    .fa-star {
+        font-size: 0.6em;
+    }
+
+    .rating {
+        font-size: 1.4em;
+        padding: 6px;
+    }
+
+    .similar-movies {
+        width: 90%;
+    }
+
+    .similar-movies__title {
+        font-size: 1.3em;
+    }
+
+    .similar-movie__img {
+        height: 240px;
+    }
+
+    .similar-movie__title {
+        font-size: 1em;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .details {
+        width: 86%;
+    }
+
+    .movie-details__title {
+        font-size: 2.5em;
+    }
+
+    .media__content {
+        height: 450px;
+    }
+
+    .poster__img {
+        height: 450px;
+    }
+
+    .additional-details {
+        font-size: 1em;
+    }
+
+    .genres__list {
+        font-size: 20px;
+    }
+
+    .overview__text {
+        font-size: 1em;
+    }
+
+    .rating {
+        font-size: 1.6em;
+    }
+
+    .similar-movies {
+        width: 90%;
+    }
+
+    .similar-movie__img {
+        height: 265px;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    .details {
+        width: 73%;
+    }
+
+    .media__content {
+        height: 500px;
+    }
+
+    .poster__img {
+        height: 500px;
+    }
+
+    .additional-details {
+        font-size: 1em;
+    }
+
+    .rating {
+        font-size: 1.6em;
+        padding: 10px;
+    }
+
+    .similar-movies {
+        width: 75%;
+    }
+
+    .similar-movies__title {
+        font-size: 1.5em;
+    }
+
+    .similar-movie__img {
+        height: 300px;
+    }
+}
