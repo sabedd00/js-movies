@@ -1,6 +1,6 @@
 'use strict';
 
-import {getData, setMovieCardClickListener} from './index.js';
+import {getData, scrollToTop, setMovieCardClickListener} from './index.js';
 import logo from '../images/tmdb-logo.svg';
 import emptyPoster from '../images/empty-poster.png';
 import {
@@ -30,14 +30,14 @@ export function loadMovieDetails(movieId) {
 function setMovieDetailsOnLoadEventListener(xhr) {
     xhr.addEventListener('load', function () {
             if (xhr.status === 200 && xhr.readyState === 4) {
-                let movieDetails = document.getElementById('mainContent');
-                let response = JSON.parse(xhr.responseText);
-                changeBackgroundByMovie(response);
-                window.scroll(0, 0);
-                movieDetails.innerHTML = ' ';
                 document.getElementById('searchInput').value = '';
-
+                let movieDetails = document.getElementById('mainContent');
+                movieDetails.innerHTML = ' ';
                 movieDetails.append(document.getElementById('movieDetailsTemplate').content.cloneNode(true));
+                let response = JSON.parse(xhr.responseText);
+
+                changeBackgroundByMovieContent(response);
+                scrollToTop();
                 setMovieDetailsContent(response);
                 setSimilarMovies(response);
                 setMovieCardClickListener(response, document.getElementsByClassName('similar-movie__item'));
@@ -47,17 +47,21 @@ function setMovieDetailsOnLoadEventListener(xhr) {
 }
 
 function setMovieDetailsContent(response) {
+    setRating(response);
+    setAdditionalDetails(response);
+    setMediaContent(response);
     document.getElementById('movieTitleByDetails').textContent = `${response.title}`;
-
-    showRating(response);
-    showAdditionalDetails(response);
-    showMediaContent(response);
-
     document.getElementById('genresList').innerHTML = `${response.genres.map(genre => genre.name).join(', ')}`;
     document.getElementById('overview').textContent = `${response.overview}`;
 }
 
-function showAdditionalDetails(response) {
+function setAdditionalDetails(response) {
+    setReleaseDate(response);
+    setRuntime(response);
+    setBudget(response);
+}
+
+function setReleaseDate(response) {
     if (response.release_date === '') {
         document.getElementById('releaseDate').textContent = '';
         document.getElementById('releaseDate').style.marginRight = '0';
@@ -65,7 +69,9 @@ function showAdditionalDetails(response) {
     } else {
         document.getElementById('releaseDate').textContent = `${new Date(response.release_date).getFullYear()}`
     }
+}
 
+function setRuntime(response) {
     if (response.runtime == null || response.runtime === 0) {
         document.getElementById('runningTime').innerHTML = '';
         document.getElementById('runningTime').style.marginRight = '0';
@@ -74,7 +80,9 @@ function showAdditionalDetails(response) {
     } else {
         document.getElementById('runningTime').innerHTML = `${response.runtime + ' min'}`;
     }
+}
 
+function setBudget(response) {
     if (response.budget.toLocaleString() !== '0') {
         document.getElementById('budget').innerHTML = '$' + response.budget.toLocaleString();
     } else {
@@ -83,7 +91,7 @@ function showAdditionalDetails(response) {
     }
 }
 
-function showRating(response) {
+function setRating(response) {
     if (response.vote_average === 0) {
         document.getElementById('rating').innerHTML = ''
         document.getElementById('rating').style.background = '0';
@@ -92,13 +100,20 @@ function showRating(response) {
     }
 }
 
-function showMediaContent(response) {
+function setMediaContent(response) {
+    setDetailsPoster(response);
+    setTrailer(response);
+}
+
+function setDetailsPoster(response) {
     let poster = document.getElementById('posterByDetails');
     poster.src = `${BASE_IMAGE_URL + BIG_IMAGE_SIZE + response.poster_path}`;
     if (poster.src === 'https://image.tmdb.org/t/p/w342null') {
         poster.src = emptyPoster;
     }
+}
 
+function setTrailer(response) {
     if (response.videos.results.length === 0) {
         document.getElementById('trailerContent').innerHTML = ' ';
     } else {
@@ -118,26 +133,32 @@ function setSimilarMovies(response) {
             item.className = "similar-movie__item";
             item.id = "similarMovie"
             let poster = document.createElement('img');
-            poster.className = "similar-movie__img";
-            showPoster(movie, poster, SMALL_IMAGE_SIZE);
-            poster.alt = "Similar movie poster";
+            createDetailsPosterContent(movie, poster);
             let title = document.createElement('h3');
-            title.className = "similar-movie__title";
-            if (!!isNaN(movie.release_date)) {
-                title.textContent = `${movie.title}` + ` (${new Date(movie.release_date).getFullYear()})`;
-            } else {
-                title.textContent = `${movie.title}`
-            }
-
+            createDetailsTitleContent(movie, title);
             item.append(poster, title);
             similarMovieList.appendChild(item);
         })
-
         initSlider();
     }
 }
 
-export function showPoster(movie, poster, size) {
+function createDetailsPosterContent(movie, poster) {
+    poster.className = "similar-movie__img";
+    setPoster(movie, poster, SMALL_IMAGE_SIZE);
+    poster.alt = "Similar movie poster";
+}
+
+function createDetailsTitleContent(movie, title) {
+    title.className = "similar-movie__title";
+    if (!!isNaN(movie.release_date)) {
+        title.textContent = `${movie.title}` + ` (${new Date(movie.release_date).getFullYear()})`;
+    } else {
+        title.textContent = `${movie.title}`
+    }
+}
+
+export function setPoster(movie, poster, size) {
     if (movie.poster_path == null) {
         poster.src = emptyPoster;
     } else {
@@ -158,7 +179,7 @@ function initSlider() {
     });
 }
 
-function changeBackgroundByMovie(response) {
+function changeBackgroundByMovieContent(response) {
     let background = BASE_IMAGE_URL + ORIGINAL_IMAGE_SIZE + response.backdrop_path;
     document.body.style.backgroundImage = 'url(' + background + ')';
 }

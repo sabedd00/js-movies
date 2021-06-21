@@ -18,7 +18,6 @@
     "xml-loader": "^1.2.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
     "start": "webpack serve"
   },

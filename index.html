@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= htmlWebpackPlugin.options.title %></title>
     <script src="./config.bundle.js"></script>
     <script src="./pagination.bundle.js"></script>
@@ -85,12 +86,21 @@
         <button class="pagination__button prev-page__button" id="prevPageButton"><</button>
         <button class="pagination__button first-page__button" id="firstPageButton">1</button>
         <button class="pagination__button step-back" id="stepBackPageButton">...</button>
+        <button class="pagination__button two-pages-back-page" id="twoPagesBackButton"></button>
         <button class="pagination__button back-page" id="backPageButton"></button>
         <button class="pagination__button current-page__button active-page__button" id="currentPageButton"></button>
         <button class="pagination__button forward-page" id="forwardPageButton"></button>
+        <button class="pagination__button two-pages-forward-page" id="twoPagesForwardButton"></button>
         <button class="pagination__button step-forward" id="stepForwardPageButton">...</button>
         <button class="pagination__button last-page__button" id="lastPageButton"></button>
         <button class="pagination__button next-page__button" id="nextPageButton">></button>
+      </div>
+    </template>
+
+    <template id="movieListTemplate">
+      <h2 class="movie__title" id="movieTitle"></h2>
+      <div class="movie-list">
+        <div class="movie-list__content" id="movieList"></div>
       </div>
     </template>
 

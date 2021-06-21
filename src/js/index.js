@@ -1,7 +1,7 @@
 'use strict';
 
 import Logo from '../images/tmdb-logo.svg';
-import {loadMovieDetails, showPoster} from "./movie-details.js";
+import {loadMovieDetails, setPoster} from "./movie-details.js";
 import '../css/index.css';
 import {
     API_KEY,
@@ -27,8 +27,7 @@ export function loadPopularMovies(pageValue) {
         if (xhr.status === 200 && xhr.readyState === 4) {
             document.body.style.background = '#191919';
             let response = JSON.parse(xhr.responseText);
-            window.scrollTo({top: 0});
-
+            scrollToTop();
             setMovieList(xhr, response);
             initPagination(pageValue, response);
         }
@@ -39,22 +38,13 @@ export function loadPopularMovies(pageValue) {
 export function createMovieListContent(response) {
     let mainContent = document.getElementById('mainContent');
     mainContent.innerHTML = ' ';
-    let mainTitle = document.createElement('h2');
-    mainTitle.className = 'movie__title';
-    mainTitle.id = 'movieTitle';
-    mainTitle.textContent = 'Popular movies';
-    let movieList = document.createElement('div');
-    movieList.className = 'movie-list';
-    let movieListContent = document.createElement('div');
-    movieListContent.className = 'movie-list__content';
-    movieListContent.id = 'movieList';
-    movieList.appendChild(movieListContent);
-    mainContent.append(mainTitle, movieList);
+    mainContent.append(document.getElementById('movieListTemplate').content.cloneNode(true));
+    document.getElementById('movieTitle').textContent = 'Popular movies';
 
-    createMovieCardContent(response, movieListContent);
+    createMovieCardContent(response);
 }
 
-function createMovieCardContent(response, movieListContent) {
+function createMovieCardContent(response) {
     response.results.forEach(function (movie) {
         let item = document.createElement('div');
         item.className = "movie__item";
@@ -62,41 +52,54 @@ function createMovieCardContent(response, movieListContent) {
         let posterContent = document.createElement('div');
         posterContent.className = 'movie__item__img__content';
         let overlay = document.createElement('div');
-        overlay.className = 'overlay';
-        let overlayRating = document.createElement('div');
-        overlayRating.className = 'overlay__rating';
-        overlayRating.textContent = `${movie.vote_average}`;
-        let overlayReleaseYear = document.createElement('div');
-        overlayReleaseYear.className = "overlay__release-year";
-        let overlayOverview = document.createElement('div');
-        overlayOverview.textContent = `${movie.overview}`;
-        overlayOverview.className = "overlay__overview";
-        showOverlayDetails(movie, overlay, overlayReleaseYear, overlayOverview, overlayRating)
+        createOverlayContent(movie, overlay);
         let poster = document.createElement('img');
-        poster.className = "movie__item__img";
-        poster.id = "moviePoster";
-        showPoster(movie, poster, BIG_IMAGE_SIZE);
-        poster.alt = "Movie poster";
-        posterContent.append(overlay, poster);
+        createMoviePosterContent(movie, poster);
         let title = document.createElement('h3');
-        title.className = "movie__item__title";
-        title.textContent = `${movie.title}`;
+        createMovieTitleContent(movie, title);
+
+        posterContent.append(overlay, poster);
         item.append(posterContent, title);
-        movieListContent.append(item);
+        document.getElementById('movieList').append(item);
     });
 }
 
-function showOverlayDetails(movie, overlay, overlayReleaseYear, overlayOverview, overlayRating) {
-    if (!!isNaN(movie.release_date)) {
-        overlayReleaseYear.textContent = `${new Date(movie.release_date).getFullYear()}`
-    } else {
-        overlayReleaseYear.textContent = '';
-    }
+function createOverlayContent(movie, overlay) {
+    overlay.className = 'overlay';
+    let overlayRating = document.createElement('div');
+    overlayRating.className = 'overlay__rating';
+    overlayRating.textContent = `${movie.vote_average}`;
+    let overlayReleaseYear = document.createElement('div');
+    overlayReleaseYear.className = "overlay__release-year";
+    let overlayOverview = document.createElement('div');
+    overlayOverview.textContent = `${movie.overview}`;
+    overlayOverview.className = "overlay__overview";
 
+    showOverlayReleaseYear(movie, overlayReleaseYear);
     if (movie.vote_average === 0) {
         overlay.append(overlayReleaseYear, overlayOverview);
     } else {
         overlay.append(overlayRating, overlayReleaseYear, overlayOverview);
+    }
+}
+
+function createMoviePosterContent(movie, poster) {
+    poster.className = "movie__item__img";
+    poster.id = "moviePoster";
+    setPoster(movie, poster, BIG_IMAGE_SIZE);
+    poster.alt = "Movie poster";
+}
+
+function createMovieTitleContent(movie, title) {
+    title.className = "movie__item__title";
+    title.textContent = `${movie.title}`;
+}
+
+function showOverlayReleaseYear(movie, overlayReleaseYear) {
+    if (!!isNaN(movie.release_date)) {
+        overlayReleaseYear.textContent = `${new Date(movie.release_date).getFullYear()}`
+    } else {
+        overlayReleaseYear.textContent = '';
     }
 
     if (movie.vote_average !== 0 && !!isNaN(movie.release_date) || !!isNaN(movie.release_date) && movie.overview !== '') {
@@ -132,8 +135,7 @@ export function getData(xhr, url) {
 }
 
 function setHeaderLogoOnClickListener() {
-    let headerLogo = document.getElementById('headerLogo');
-    headerLogo.addEventListener('click', function () {
+    document.getElementById('headerLogo').addEventListener('click', function () {
         document.getElementById('searchInput').value = '';
         getPopularMovies(1);
     })
@@ -143,7 +145,7 @@ function setLoadPopularContentListener() {
     if (history.state === null) {
         getPopularMovies(1);
     } else {
-        window.addEventListener("load", function (event) {
+        window.addEventListener("load", function () {
             getPageContent();
         });
     }
@@ -161,7 +163,6 @@ function setPopStateListener() {
 }
 
 function getPageContent() {
-    console.log(history.state.page)
     if (history.state.page === 'popular') {
         document.getElementById('searchInput').value = '';
         loadPopularMovies(history.state.page_id);
@@ -171,4 +172,8 @@ function getPageContent() {
     } else if (history.state.page === 'details') {
         loadMovieDetails(history.state.details_id);
     }
+}
+
+export function scrollToTop() {
+    window.scrollTo({top: 0});
 }
